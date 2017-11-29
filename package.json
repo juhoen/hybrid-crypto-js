@@ -26,6 +26,6 @@
   "homepage": "https://github.com/juhoen/react-native-hybrid-crypto#readme",
   "dependencies": {
     "node-forge": "^0.7.1",
-    "react-native": "^0.50.4"
+    "react-native": "^0.48.4"
   }
 }
