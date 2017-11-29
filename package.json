@@ -2,7 +2,7 @@
   "name": "react-native-hybrid-crypto",
   "version": "0.1.0",
   "description": "RSA+AES hybrid encryption implementation for React Native",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
