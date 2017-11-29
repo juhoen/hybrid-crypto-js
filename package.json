@@ -1,0 +1,27 @@
+{
+  "name": "react-native-hybrid-crypto",
+  "version": "0.1.0",
+  "description": "RSA+AES hybrid encryption implementation for React Native",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/juhoen/react-native-hybrid-crypto.git"
+  },
+  "keywords": [
+    "rsa",
+    "aes",
+    "rsa+aes",
+    "react-native",
+    "react",
+    "native"
+  ],
+  "author": "Juho Enala <juho.enala@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/juhoen/react-native-hybrid-crypto/issues"
+  },
+  "homepage": "https://github.com/juhoen/react-native-hybrid-crypto#readme"
+}
