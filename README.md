@@ -1,3 +1,3 @@
 **WORK IN PROGRESS**
-# React Native hybrid crypto
-RSA+AES hybrid encryption implementation for React Native
+# Hybrid crypto JS
+RSA+AES hybrid encryption implementation for JavaScript, including key management for React Native.
