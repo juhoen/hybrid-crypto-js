@@ -1,5 +1,5 @@
 {
-  "name": "react-native-hybrid-crypto",
+  "name": "hybrid-crypto-js",
   "version": "0.1.0",
   "description": "RSA+AES hybrid encryption implementation for React Native",
   "main": "lib/index.js",
