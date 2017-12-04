@@ -89,15 +89,16 @@ describe('Crypto', function() {
 
         // Encrypted message should contain version, iv, key and cipher
         var parsed = JSON.parse(encrypted);
+
         assert.typeOf(parsed.v, 'string');   // Version number
         assert.typeOf(parsed.iv, 'string');  // Initialization vector
-        assert.typeOf(parsed.iv, 'string');  // AES key
-        assert.typeOf(parsed.iv, 'string');  // Actual encrypted message
+        assert.typeOf(parsed.key, 'string');  // AES key
+        assert.typeOf(parsed.cipher, 'string');  // Actual encrypted message
     });
 
 
     it('should decrypt message', function() {
-        var encrypted = '{"v":"hybrid-crypto-js_0.1.0","iv":"LZQmK1oL0wMluPIMADJqdvPT/aWpQxemJ63olybtgr2U2Y5xxwm/KQfetT7gojGtEkZg3xUBRCiAMV634OQwQu2tos6+3wgILc4wVE8w+fxh8ZTs2cqnUwLNZpmYEX7lfMOpybvGujLOwwImXHOBAgtTl0UjOdmhSVCsrzzRwNDJDbhmOCmWx5scjh0N0FpisFrST84nw5Z4fimGQtFge7c6IkYPW+EdzC2n0RSkFECfmhGIOrbxiGw9etRwl917EuI+EhkhiOQ2329DSUTvhSpZnK4ceqkLBwjgr9YWVIW2UvQPfuZUA8lgvw2T9d5LzXl1EBPn1ZeZZAoytsXuXUUjM2bezlMrUXOHuSUJjGOSI1cA9ha6jc9uydgZFruh9ZDtuHV7kgHp1hIsm0GNBnxRWuVwVl62uwguGEnOtSyxrhwSqoj6xMuUrpatojJ/3fljP7dGJ/OesUXXSeI/xH/GFBr6FC7uevGPuIbTfnW4x+LU48diP6ba6uDUU6WkrgXRgAZ/52E/15cOFRxa+GnnNE6R93/01RzoeZTT+q1Wk/pdKMEDmXqsWTI/mJj/gvhraiaYuKqfoDVSiMx4I17Tdg/GgvMv6F6L/B7hfS9HfXKU7rKoTGQw0SUfGpEUz9w9NRAWXPc+/9UxPWvpM+ZTwt4KhvKIFqrPtEQkklM=","key":"JKrEPXGiT9Ujn0fjCUny0mmTBv7BGXf+7icEMMY722etT+RCLgV/+e4qvz1nLudDthlgR3dGYHu2BjMPQfCgzUdf50aeNWIrv3ZlXhUmHvQQozQscsSLc29WoM1i4p+aQx+vtIZgH1JLK8YQaheNDffPxbTMwBefiOY1JEMl+R1AN87HKLPgItIecCq4Uld2v0X3FPCAopEXkCo2AmmACxbpRZMeJ28ob3qCynDZz7cwWcHEEqiyODqt6/l2BUUQBPuI1AQ8aBn7/4PNdRAZFaNKkOScFugyG+kKM8r4xUNnCapdvMH7+0N0jH7wVP4l4BOAkzWocsSiDLUSb7e8U+xF6T12qBqc4NA4sFVntI+hKROvO+3EcH7p+x0IsTWY6R4IztSmp8tXv1PvqkFN2CiShVYPUJwI7qoYozfszb1vyZ4Uc/GDUti4WREvDC4Vfva+VRbUSPv1tGUr1X7k6/cJjK0S2Ks04aOTv9dvM6/+yBACUTPBP4gFzmI5YB79uOSRTcIzV67KZjCETe0UgAy2bRTslI7uisR+8Jvv+MRfiuAWFFqTn1KBhuW5Wyvp3oyNJeerhj7lzU80j2bQlPhu6iESrbgrIbUUSVZKnCpsSwd5FUuw9CrLMLRk25nZjLP0weHdB6pO4m2qmeDSOLO/a1SEDop7YdEscspvzX4=","cipher":"A/slOYxhxby/NbaJeSbPJw=="}';
+        var encrypted = '{"v":"hybrid-crypto-js_0.1.0","iv":"Y/uyDfZpW1FE7fk5pDbFBxajGsYW7AHYFoia74nEoiw=","key":"ovi2k4zGdJgspIbyfjdvRkSzKCdwxmNG+UC7Sj9GndqkRARQq2Gyg6IbrzBkxG3yfgBWn63STyKFWarpAfakjUNviVjTUN314Hl82s3Nt+2bT12Cfsc9PTEtaEEOYyLRyY2g7CICUyB3huoWM6XoOa8dFXPyUXyTs9v4o2ZWjyal6YzxAJDm0fJlL1baDJH/3St7uGkCGgXGbjJhtXRsuNM4VWvOCYCTUzsKyAYRSxYgknZltoL6fDS/54m7hxeyZS15AWMUY+mz2Gcr1ayFxtN4yys0OiH7TLr7vVdEIk9d1DG0MwPJkcJi6x+jpcimy9KLFFypG8dr/glmtCfGYEsXbJj9DFxLOsztt7TIKBiNl3tqfp5CCXBfwBivMWfQW6yx9HlV+kF+wvdGczq2526nFlLLFa/Uu9l0PjJazJGKAjgCGipgVGJEtuUzzh3YpUpmOR/ebjXEAi2gVhPOH9FT/+eG/lumJYHibrAo2ENuQgMMbUG4AEMDEyg1xTDaVMcKgyLQxRAT1JzI3FVQF44SjMDt854IX7CEV/cMiqBNyRm1xchImv35iehigiSFmpJxe4fYQOM56RbLWla0U1va6n4qBKpTW9ijP4O5jRedjAz4F0kGUCgEYhxNuzgaCPAAg6rHx8fREjz2yEnGDkR6QYGYMrOcGMEoIMjbBUc=","cipher":"re956ch9YheKpVeydI6CHQ=="}';
         var decrypted = crypto.decrypt(keypair, encrypted);
 
         assert.typeOf(decrypted, 'string');
