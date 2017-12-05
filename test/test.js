@@ -27,21 +27,17 @@ describe('KeyManager', function() {
         });
     });
 
-
     it('keypair should be object', function() {
         assert.typeOf(keypair, 'object');
     });
-
 
     it('keypair\'s public key shoud be object', function() {
         assert.typeOf(keypair.publicKey, 'object');
     });
 
-
     it('keypair\'s private key should be object', function() {
         assert.typeOf(keypair.privateKey, 'object');
     });
-
 
     it('should convert keys to PEMs', function() {
         var pems = keyManager.keysToPem(keypair);
@@ -53,7 +49,6 @@ describe('KeyManager', function() {
         assert.typeOf(pems.publicKey, 'string');
         assert.typeOf(pems.privateKey, 'string');
     });
-
 
     it('should convert PEMs to keys', function() {
         var pems = {
@@ -97,7 +92,6 @@ describe('Crypto', function() {
         assert.typeOf(parsed.keys, 'object');    // Encrypted AES keys
         assert.typeOf(parsed.cipher, 'string');  // Actual encrypted message
     });
-
 
     it('should decrypt message', function() {
         var encrypted = '{"v":"hybrid-crypto-js_0.1.0","iv":"NA78kG6uKcCckJX8wuJTT1q7nHki9hsSvFwIr96wqto=","keys":{"85:3d:10:e1:56:f2:ef:14:86:1e:ff:8c:5d:72:9c:82:a3:ff:10:f0":"q2kAMD3VC/HQGfLsbk0OBtk4pFSBIFfbN7Xh47rn+FecBdLUMkSMcLfD/UIqBA3MM3VHOvJ3BXnrduDnbMrrQMZjLaK0SmkSK+vcZmmQjNnlFqlnyGYuGpF/0q3g367rC5RMEa1cRX+12/gLPHEomcby/Onc+Ph12jSjloam+Rv4AlxEoS+5uMD6OeJ3VuBhUjCdZK86sTxoycHgF7GDkIrQr80EqxOwf1xO8XT9izMLDv16FBQ5q6FTZxY5/t2Cf5Vcn9yO+cPFvYd95YfB4T4XwmOKmwy21KhfvAPb1JLVOeJ74Q5/AZugnEDpL0omDDuC6iDZx0L0JqRm81oDDGyYENgW0ElTPM+G2voCR0wx85dFZ5ifypdyLv6C2BiOmCEHSn42Qbs08T3ggVc39dwnUnIHXirfWCzNyAzdhinv5Hv34edFEiVJbZtcGKMJWSpwn2OfT/O1EzhlTrEPsXPDEkKOZYC+bIxzu8BTcOuzsV0tHSUG6bS7o0yAZaFNYUHzCwmPLyLCqaZ5EQsgCdEJ1YObEGxxQkLXdtshcuzFNeRNgS+2z+v1tDVPeB4DmE3cvRc/y5hk84LqpuKSz9mLYW9Iw0DL07Wv0qPpelpOsxtRfePGttF9H9KEh0fXpf9R4zIzXs4iOOTPlWd/H997ah+7RRERZndZpp/7/tE="},"cipher":"CskoOPzs2J2p0ygmW9W9wQ=="}';
@@ -189,5 +183,5 @@ describe('Helpers', function() {
         // Array should math with object in array
         expect(arr).to.eql([obj]);
     });
-    
+
 });
