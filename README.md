@@ -1,12 +1,14 @@
 # Hybrid Crypto JS
 Hybrid Crypto JS is a hybrid encryption/decryption implementation for JavaScript.
 
-## Getting started
-- []
+## Introduction
+<a name="introduction" />
 
 ## Documentation
+<a name="documentation" />
 **Getting started**
 - [Introduction](#introduction)
+- [Documentation](#documentation)
 - [Installation](#installation)
 - [Testing](#testing)
 
@@ -17,9 +19,6 @@ Hybrid Crypto JS is a hybrid encryption/decryption implementation for JavaScript
 - [Signing a message](#signing-a-message)
 - [RSA keypairs](#rsa-keypairs)
 - [React Native key management](#rn-key-management)
-
-### Introduction
-<a name="introduction" />
 
 ### Installation
 <a name="installation" />
