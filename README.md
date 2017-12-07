@@ -123,14 +123,35 @@ Verification function return *true* or *false* depending on whether the verifica
 // Initialize RSA-class
 var rsa = new RSA();
 
-// Generate RSA key pair
+
+// Generate RSA key pair, defaults on 4096 bit key
 rsa.generateKeypair(function(keypair) {
     
     // Callback function receives new keypair as a first argument
     var publicKey = keypair.publicKey;
     var privateKey = keypair.privateKey;
+
 });
+
+
+// Generate 1024 bit RSA key pair
+rsa.generateKeypair(function(keypair) {
+
+    // Callback function receives new 1024 bit keypair as an argument
+    var publicKey = keypair.publicKey;
+    var privateKey = keypair.privateKey;
+
+}, 1024);  // Key size
+
+
+// RSA can be also initialized with options
+var rsa = new RSA({
+    keySize: 4096, 
+    rsaStandard: 'RSA-OAEP'  // RSA-OAEP or RSAES-PKCS1-V1_5, 
+});
+
 ```
+
 
 ### React Native key management
 <a name="rn-key-management" />
