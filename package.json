@@ -4,7 +4,8 @@
   "description": "Hybrid (RSA+AES) encryption and decryption toolkit for JavaScript",
   "main": "lib/index.js",
   "scripts": {
-    "test": "mocha --require babel-core/register -R spec"
+    "test": "mocha --require babel-core/register -R spec",
+    "browserify": "browserify lib/bundle.js -o bundle.js -t [ babelify --presets [ es2015 react ] ]"
   },
   "repository": {
     "type": "git",
@@ -29,12 +30,15 @@
     "react-native": "^0.48.4"
   },
   "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-preset-env": "1.6.0",
+    "babelify": "^8.0.0",
     "chai": "^4.1.2",
-    "mocha": "^4.0.1",
-    "babel-core": "6.26.0",
-    "babel-preset-env": "1.6.0"
+    "mocha": "^4.0.1"
   },
   "babel": {
-    "presets": ["react-native"]
+    "presets": [
+      "react-native"
+    ]
   }
 }
