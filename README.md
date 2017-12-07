@@ -1,5 +1,7 @@
 # Hybrid Crypto JS
 
+[![NPM](https://nodei.co/npm/hybrid-crypto-js.png?mini=true)](https://nodei.co/npm/hybrid-crypto-js/)
+
 ## Introduction
 <a name="introduction" />
 
