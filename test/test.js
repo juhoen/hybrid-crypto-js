@@ -164,6 +164,36 @@ describe('Crypto', function() {
         assert.equal(decrypted, null);
     });
 
+    it('should create a signature', function() {
+        var message = 'Hello world!';
+
+        // Create signature
+        var signature = crypto.sign(privateKey, message);
+        
+        // Signature should be string with the length of atleast 1
+        assert.typeOf(signature, 'string');
+        assert.isAtLeast(signature.length, 0);
+
+        // Signature shouldn't be the same string as the input message
+        assert.notEqual(signature, message);
+    });
+
+    it('should verify signature with the same input message', function() {
+        var message = 'Hello world!';
+
+        // Create signature
+        var signature = crypto.sign(privateKey, message);
+
+        // Verify with same message
+        var verified = crypto.verify(publicKey, signature, message);
+
+        // verified should be boolean
+        assert.typeOf(verified, 'boolean');
+
+        // verified should be true
+        assert.equal(verified, true);
+    });
+
 });
 
 describe('Helpers', function() {
