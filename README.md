@@ -23,6 +23,7 @@
 
 ### Installation
 <a name="installation" />
+
 ```
 npm install hybrid-crypto-js
 ```
