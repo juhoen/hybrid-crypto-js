@@ -123,7 +123,6 @@ Verification function return *true* or *false* depending on whether the verifica
 // Initialize RSA-class
 var rsa = new RSA();
 
-
 // Generate RSA key pair, defaults on 4096 bit key
 rsa.generateKeypair(function(keypair) {
     
@@ -133,7 +132,6 @@ rsa.generateKeypair(function(keypair) {
 
 });
 
-
 // Generate 1024 bit RSA key pair
 rsa.generateKeypair(function(keypair) {
 
@@ -142,7 +140,6 @@ rsa.generateKeypair(function(keypair) {
     var privateKey = keypair.privateKey;
 
 }, 1024);  // Key size
-
 
 // RSA can be also initialized with options
 var rsa = new RSA({
