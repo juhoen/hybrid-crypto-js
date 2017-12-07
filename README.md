@@ -85,8 +85,34 @@ var message = decrypted.message;
 ### Signatures
 <a name="signatures" />
 
+*Hybrid Crypto JS* provides simple message signing. When issuer signs a message, message receiver can be sure of the message issuer.
+
+```js
+var message = 'Hello world!';
+
+// Create a signature with ISSUER's private RSA key
+var signature = crypto.signature(issuerPrivateKey, message);
+
+// Encrypt message with RECEIVERS public RSA key and attach the signature
+var encrypted = crypto.encrypt(receiverPublicKey, message, signature);
+```
+
 ### Verifying
 <a name="verifying" />
+
+Message receiver needs to have message issuer's public RSA key in order to verify message issuer.
+
+```js
+// Encrypted message with signature
+var encrypted = '{"v":"hybri... ..."signature":"sdL93kfd...';
+
+// Decrypt message
+var decrypted = crypto.decrypt(receiverPrivateKey, encrypted);
+
+// Verify message issuer
+var verified = crypto.verify(issuerPublicKey, decrypted);
+```
+Verification function return *true* or *false* depending on whether the verification was successfull.
 
 ### RSA keypairs
 <a name="rsa-keypairs" />

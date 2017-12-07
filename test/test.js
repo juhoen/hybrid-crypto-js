@@ -168,7 +168,7 @@ describe('Crypto', function() {
         var message = 'Hello world!';
 
         // Create signature
-        var signature = crypto.sign(privateKey, message);
+        var signature = crypto.signature(privateKey, message);
         
         // Signature should be string with the length of atleast 1
         assert.typeOf(signature, 'string');
@@ -182,7 +182,7 @@ describe('Crypto', function() {
         var message = 'Hello world!';
 
         // Create signature
-        var signature = crypto.sign(privateKey, message);
+        var signature = crypto.signature(privateKey, message);
 
         // Verify with same message
         var verified = crypto.verify(publicKey, signature, message);
@@ -199,7 +199,7 @@ describe('Crypto', function() {
         var message2 = 'Moikka maailma!';
 
         // Create signature
-        var signature = crypto.sign(privateKey, message1);
+        var signature = crypto.signature(privateKey, message1);
 
         // Verify with different message
         var verified = crypto.verify(publicKey, signature, message2);
@@ -219,7 +219,7 @@ describe('Crypto', function() {
         var message = 'Hello world!';
 
         // Issuer generates signature
-        var signature = crypto.sign(issuerPrivateKey, message);
+        var signature = crypto.signature(issuerPrivateKey, message);
 
         // Issuer encrypts message
         var encrypted = crypto.encrypt(publicKey, message, signature);
