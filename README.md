@@ -17,7 +17,6 @@
 - [Encryption](#encryption)
 - [Decryption](#decryption)
 - [Signatures](#signatures)
-- [Signing a message](#signing-a-message)
 - [RSA keypairs](#rsa-keypairs)
 - [React Native key management](#rn-key-management)
 
@@ -31,7 +30,7 @@
 ### Encryption
 <a name="encryption" />
 
-*Hybrid Crypto JS* provides basic encryption function which supports also multiple RSA keys, with or without signature. Encrypted message is outputted as a JSON string.
+*Hybrid Crypto JS* provides basic encryption function which supports also multiple RSA keys, with or without [signature](#signatures). Encrypted message is outputted as a JSON string.
 ```js
 var message = 'Hello world!';
 
@@ -55,6 +54,7 @@ var encrypted = crypto.encrypt(publicKey, message, signature);
         "d3:48:6a:e9:13...": "t9eds3..."
     },
     "cipher": "+iwVFsC2dECBQvwcm9DND..."  // Actual encrypted message
+    "signature": "sdL93kfdm12feds3C2..."  // Optional signature
 }
 
 ```
@@ -63,9 +63,6 @@ var encrypted = crypto.encrypt(publicKey, message, signature);
 
 ### Signatures
 <a name="signatures" />
-
-### Signing a message
-<a name="signing-a-message" />
 
 ### RSA keypairs
 <a name="rsa-keypairs" />
