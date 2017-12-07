@@ -117,7 +117,7 @@ Verification function return *true* or *false* depending on whether the verifica
 ### RSA keypairs
 <a name="rsa-keypairs" />
 
-*Hybrid Crypto JS* RSA key generation function is based in (Forge)[https://github.com/digitalbazaar/forge#rsa] key pair generation function. As a difference *Hybrid Crypto JS* returns keypair in PEM format.
+*Hybrid Crypto JS* RSA key generation function is based in [Forge](https://github.com/digitalbazaar/forge#rsa) key pair generation function. As a difference *Hybrid Crypto JS* returns keypair in PEM format.
 
 ```js
 // Initialize RSA-class
