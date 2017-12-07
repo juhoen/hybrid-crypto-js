@@ -42,6 +42,19 @@ var encrypted = crypto.encrypt(publicKey, message);
 var encrypted = crypto.encrypt([publicKey1, publicKey2, publicKey3], message);
 ```
 
+Sample output
+```js
+{
+    "v": "hybrid-crypto-js_0.1.0",        // Current package version
+    "iv": "CmtyaZTyzoAp1mTNUTztic0v1...", // Initialization vector
+    "keys": {                             // Encrypted AES keys by RSA fingerprint
+        "85:3d:10:e1:56...": "bHaTF9...",
+        "d3:48:6a:e9:13...": "t9eds3..."
+    },
+    "cipher": "+iwVFsC2dECBQvwcm9DND..."  // Actual encrypted message
+}
+
+```
 ### Decryption
 <a name="decryption" />
 
