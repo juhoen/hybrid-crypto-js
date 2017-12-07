@@ -42,7 +42,7 @@ var encrypted = crypto.encrypt(publicKey, message);
 var encrypted = crypto.encrypt([publicKey1, publicKey2, publicKey3], message);
 ```
 
-Sample output
+**Sample output**
 ```js
 {
     "v": "hybrid-crypto-js_0.1.0",        // Current package version
