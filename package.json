@@ -35,6 +35,6 @@
     "babel-preset-env": "1.6.0"
   },
   "babel": {
-    "presets": ["env"]
+    "presets": ["react-native"]
   }
 }

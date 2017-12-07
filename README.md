@@ -26,6 +26,13 @@
 
 *Hybrid Crypto JS* isn't released yet, stay tuned!
 
+### Importing
+
+**React Native**
+```js
+import {crypto, keyManager, RSA} from 'hybrid-crypto-js';
+```
+
 ## Features
 
 ### Encryption
