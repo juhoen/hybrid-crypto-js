@@ -21,20 +21,20 @@ Hybrid Crypto JS is a hybrid encryption/decryption implementation for JavaScript
 - [RSA keypairs](#rsa-keypairs)
 - [React Native key management](#rn-key-management)
 
-###Encryption
+### Encryption
 <a name="encryption" />
 
-###Decryption
+### Decryption
 <a name="decryption" />
 
-###Signatures
+### Signatures
 <a name="signatures" />
 
-###Signing a message
+### Signing a message
 <a name="signing-a-message" />
 
-###RSA keypairs
+### RSA keypairs
 <a name="rsa-keypairs" />
 
-###React Native key management
+### React Native key management
 <a name="rn-key-management" />
