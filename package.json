@@ -1,7 +1,7 @@
 {
   "name": "hybrid-crypto-js",
   "version": "0.1.0",
-  "description": "RSA+AES hybrid encryption implementation for React Native",
+  "description": "Hybrid (RSA+AES) encryption and decryption toolkit for JavaScript",
   "main": "lib/index.js",
   "scripts": {
     "test": "mocha --require babel-core/register -R spec"
