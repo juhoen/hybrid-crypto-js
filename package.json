@@ -6,7 +6,7 @@
   "scripts": {
     "test": "mocha --require babel-core/register -R spec",
     "webpack": "browserify lib/webpack.js -o web/hybrid-crypto.js -t [ babelify --presets [ react-native ] ]",
-    "uglify": "uglifyjs web/hybrid-crypto.js -o web/hybrid-crypto.min.js",
+    "uglify": "uglifyjs web/hybrid-crypto.js -o web/hybrid-crypto.min.js"
   },
   "repository": {
     "type": "git",
