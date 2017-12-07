@@ -133,7 +133,7 @@ rsa.generateKeypair(function(keypair) {
 
 // Generate 1024 bit RSA key pair
 rsa.generateKeypair(function(keypair) {
-    
+
     // Callback function receives new 1024 bit keypair as an argument
     var publicKey = keypair.publicKey;
     var privateKey = keypair.privateKey;
@@ -151,4 +151,14 @@ var rsa = new RSA({
 ### React Native key management
 <a name="rn-key-management" />
 
-*In progress*
+Key manager works when using React Native. It automatically generates, saves and fetches device specific keypair from the device's storage.
+
+```js
+// Get device specific RSA key pair
+keyManager.getKeys(function(keypair) {
+
+    // Callback function receives new keypair as a first argument
+    var publicKey = keypair.publicKey;
+    var privateKey = keypair.privateKey;
+});
+```
