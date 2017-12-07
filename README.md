@@ -10,6 +10,3 @@ Hybrid Crypto JS is a hybrid encryption/decryption implementation for JavaScript
 - Message signing and verifying
 - npm package
 - Browser compatible JavaScript library
-
-## Getting started
-**Coming soon**
