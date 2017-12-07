@@ -32,7 +32,7 @@
 <a name="encryption" />
 
 *Hybrid Crypto JS* provides basic encryption function which supports also multiple RSA keys. Encrypted message is outputted as a JSON string.
-```
+```js
 var message = 'Hello world!';
 
 // Encryption with one public key
@@ -40,7 +40,6 @@ var encrypted = crypto.encrypt(publicKey, message);
 
 // Function also supports encryption with multiple RSA public keys
 var encrypted = crypto.encrypt([publicKey1, publicKey2, publicKey3], message);
-
 ```
 
 ### Decryption
