@@ -66,7 +66,7 @@ var encrypted = crypto.encrypt(publicKey, message, signature);
 Decrypting message with *Hybrid Crypto JS* is as easy as encrypting. Decryption function can decrypt any message which has been encrypted with keypair's public key. Decrypted message is outputted as a JSON object.
 ```js
 
-var encrypted = '{"v":"hybrid-crypto-js_0.1.0","iv":"CmtyaZTyzoAp1mTN...'
+var encrypted = '{"v":"hybrid-crypto-js_0.1.0","iv":"CmtyaZTyzoAp1mTN...';
 
 // Decrypt encryped message with private RSA key
 var decrypted = crypto.decrypt(privateKey, encrypted);
@@ -106,10 +106,10 @@ Message receiver needs to have message issuer's public RSA key in order to verif
 // Encrypted message with signature
 var encrypted = '{"v":"hybri... ..."signature":"sdL93kfd...';
 
-// Decrypt message
+// Decrypt message with own (RECEIVER) private key
 var decrypted = crypto.decrypt(receiverPrivateKey, encrypted);
 
-// Verify message issuer
+// Verify message with ISSUER's public key
 var verified = crypto.verify(issuerPublicKey, decrypted);
 ```
 Verification function return *true* or *false* depending on whether the verification was successfull.
@@ -117,5 +117,9 @@ Verification function return *true* or *false* depending on whether the verifica
 ### RSA keypairs
 <a name="rsa-keypairs" />
 
+*In progress*
+
 ### React Native key management
 <a name="rn-key-management" />
+
+*In progress*
