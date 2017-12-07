@@ -38,7 +38,7 @@ import {crypto, keyManager, RSA} from 'hybrid-crypto-js';
 ```
 
 Web
-```js
+```html
 <script type="test/javascript" src="hybrid-crypto.js"></script>
 ```
 
