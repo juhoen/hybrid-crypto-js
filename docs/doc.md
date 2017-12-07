@@ -1,2 +1,2 @@
-## First test document
+# First test document
 Hello world!
