@@ -97,7 +97,7 @@ describe('Crypto', function() {
         var encrypted = '{"v":"hybrid-crypto-js_0.1.0","iv":"NA78kG6uKcCckJX8wuJTT1q7nHki9hsSvFwIr96wqto=","keys":{"85:3d:10:e1:56:f2:ef:14:86:1e:ff:8c:5d:72:9c:82:a3:ff:10:f0":"q2kAMD3VC/HQGfLsbk0OBtk4pFSBIFfbN7Xh47rn+FecBdLUMkSMcLfD/UIqBA3MM3VHOvJ3BXnrduDnbMrrQMZjLaK0SmkSK+vcZmmQjNnlFqlnyGYuGpF/0q3g367rC5RMEa1cRX+12/gLPHEomcby/Onc+Ph12jSjloam+Rv4AlxEoS+5uMD6OeJ3VuBhUjCdZK86sTxoycHgF7GDkIrQr80EqxOwf1xO8XT9izMLDv16FBQ5q6FTZxY5/t2Cf5Vcn9yO+cPFvYd95YfB4T4XwmOKmwy21KhfvAPb1JLVOeJ74Q5/AZugnEDpL0omDDuC6iDZx0L0JqRm81oDDGyYENgW0ElTPM+G2voCR0wx85dFZ5ifypdyLv6C2BiOmCEHSn42Qbs08T3ggVc39dwnUnIHXirfWCzNyAzdhinv5Hv34edFEiVJbZtcGKMJWSpwn2OfT/O1EzhlTrEPsXPDEkKOZYC+bIxzu8BTcOuzsV0tHSUG6bS7o0yAZaFNYUHzCwmPLyLCqaZ5EQsgCdEJ1YObEGxxQkLXdtshcuzFNeRNgS+2z+v1tDVPeB4DmE3cvRc/y5hk84LqpuKSz9mLYW9Iw0DL07Wv0qPpelpOsxtRfePGttF9H9KEh0fXpf9R4zIzXs4iOOTPlWd/H997ah+7RRERZndZpp/7/tE="},"cipher":"CskoOPzs2J2p0ygmW9W9wQ=="}';
         
         // Encrypt encrypted message with corresponding private key
-        var decrypted = crypto.decrypt(privateKey, encrypted);
+        var decrypted = crypto.decrypt(privateKey, encrypted).message;
 
         // Decrypted message should match with original message
         assert.equal(decrypted, 'Hello world!');
@@ -110,7 +110,7 @@ describe('Crypto', function() {
         var encrypted = crypto.encrypt(publicKey, message);
         
         // Decrypt message with corresponding private key
-        var decrypted = crypto.decrypt(privateKey, encrypted);
+        var decrypted = crypto.decrypt(privateKey, encrypted).message;
 
         // Encrypted message shouldn't match with message
         assert.notEqual(encrypted, message);
@@ -126,7 +126,7 @@ describe('Crypto', function() {
         var encrypted = crypto.encrypt(publicKey, message);
 
         // Decrypt message with corresponding private key
-        var decrypted = crypto.decrypt(privateKey, encrypted);
+        var decrypted = crypto.decrypt(privateKey, encrypted).message;
 
         // Encrypted message shouldn't match with message
         assert.notEqual(encrypted, message);
@@ -142,8 +142,8 @@ describe('Crypto', function() {
         var encrypted = crypto.encrypt([publicKey, publicKey2], message);
         
         // Decrypt message with both private keys
-        var decrypted1 = crypto.decrypt(privateKey, encrypted);
-        var decrypted2 = crypto.decrypt(privateKey2, encrypted);
+        var decrypted1 = crypto.decrypt(privateKey, encrypted).message;
+        var decrypted2 = crypto.decrypt(privateKey2, encrypted).message;
 
         // Decrypted messages should be similar as well as original message
         assert.equal(decrypted1, message);
@@ -158,7 +158,7 @@ describe('Crypto', function() {
         var encrypted = crypto.encrypt(publicKey, message);
         
         // Decrypt message with corresponding private key
-        var decrypted = crypto.decrypt(privateKey2, encrypted);
+        var decrypted = crypto.decrypt(privateKey2, encrypted).message;
 
         // Output should be null
         assert.equal(decrypted, null);
@@ -192,6 +192,56 @@ describe('Crypto', function() {
 
         // verified should be true
         assert.equal(verified, true);
+    });
+
+    it('should not verify signature with separate input messages', function() {
+        var message1 = 'Hello world!';
+        var message2 = 'Moikka maailma!';
+
+        // Create signature
+        var signature = crypto.sign(privateKey, message1);
+
+        // Verify with different message
+        var verified = crypto.verify(publicKey, signature, message2);
+
+        // verified should be boolean
+        assert.typeOf(verified, 'boolean');
+
+        // verified should be false
+        assert.equal(verified, false);
+    });
+
+    it('should verify signed message', function() {
+        // Issuer keys
+        var issuerPublicKey = publicKey2;
+        var issuerPrivateKey = privateKey2;
+
+        var message = 'Hello world!';
+
+        // Issuer generates signature
+        var signature = crypto.sign(issuerPrivateKey, message);
+
+        // Issuer encrypts message
+        var encrypted = crypto.encrypt(publicKey, message, signature);
+
+        // Receiver decryptes message
+        var decrypted = crypto.decrypt(privateKey, encrypted);
+
+        // Receiver verifies the signature
+        var verified = crypto.verify(issuerPublicKey, decrypted.signature, decrypted.message);
+
+        // Signature should match with decrypted messages signature
+        assert.typeOf(signature, 'string');
+        assert.equal(signature, decrypted.signature);
+
+        // Encrypted message should differ from original message
+        assert.notEqual(encrypted, decrypted.message);
+
+        // Decrypted message should match with original message
+        assert.equal(decrypted.message, message);
+
+        // Signature should be verified
+        assert.equal(verified, true);        
     });
 
 });
