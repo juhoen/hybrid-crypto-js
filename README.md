@@ -37,6 +37,11 @@ npm install hybrid-crypto-js
 import {crypto, keyManager, RSA} from 'hybrid-crypto-js';
 ```
 
+Web
+```js
+<script type="test/javascript" src="hybrid-crypto.js"></script>
+```
+
 ## Features
 
 ### Encryption
