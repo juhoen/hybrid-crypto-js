@@ -125,6 +125,7 @@ var rsa = new RSA();
 
 // Generate RSA key pair, defaults on 4096 bit key
 rsa.generateKeypair(function(keypair) {
+
     // Callback function receives new keypair as a first argument
     var publicKey = keypair.publicKey;
     var privateKey = keypair.privateKey;
@@ -132,6 +133,7 @@ rsa.generateKeypair(function(keypair) {
 
 // Generate 1024 bit RSA key pair
 rsa.generateKeypair(function(keypair) {
+    
     // Callback function receives new 1024 bit keypair as an argument
     var publicKey = keypair.publicKey;
     var privateKey = keypair.privateKey;
