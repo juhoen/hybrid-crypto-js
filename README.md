@@ -6,6 +6,7 @@ Hybrid Crypto JS is a hybrid encryption/decryption implementation for JavaScript
 
 ## Documentation
 <a name="documentation" />
+
 **Getting started**
 - [Introduction](#introduction)
 - [Documentation](#documentation)
