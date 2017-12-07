@@ -1,25 +1,31 @@
 # Hybrid Crypto JS
 Hybrid Crypto JS is a hybrid encryption/decryption implementation for JavaScript.
 
-## Features
-**Implemented features**
-- RSA+AES encryption and decryption
-- RSA key generation
-- RSA key manager for React Native
-- Message signing and verifying
-
-**Upcoming features**
-- npm package
-- Browser compatible JavaScript library
-- Documentation
+## Getting started
+- []
 
 ## Documentation
+**Getting started**
+- [Introduction](#introduction)
+- [Installation](#installation)
+- [Testing](#testing)
+
+**Features**
 - [Encryption](#encryption)
 - [Decryption](#decryption)
 - [Signatures](#signatures)
 - [Signing a message](#signing-a-message)
 - [RSA keypairs](#rsa-keypairs)
 - [React Native key management](#rn-key-management)
+
+### Introduction
+<a name="introduction" />
+
+### Installation
+<a name="installation" />
+
+### Testing
+<a name="testing" />
 
 ### Encryption
 <a name="encryption" />
