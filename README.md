@@ -23,8 +23,9 @@
 
 ### Installation
 <a name="installation" />
-
-*Hybrid Crypto JS* isn't released yet, stay tuned!
+```
+npm install hybrid-crypto-js
+```
 
 ### Importing
 
