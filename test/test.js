@@ -248,7 +248,7 @@ describe('Crypto', function() {
 
 describe('Helpers', function() {
 
-    it('toArray should return array as the same array', function() {
+    it('toArray should keep array as array', function() {
         var arr1 = [1, 2, 3, 4, 5];
         var arr2 = helpers.toArray(arr1);
 
@@ -256,7 +256,7 @@ describe('Helpers', function() {
         expect(arr2).to.eql(arr1);
     });
 
-    it('toArray should create array of object', function() {
+    it('toArray should create array', function() {
         var obj = {greeting: 'Hello world!'};
         var arr = helpers.toArray(obj);
 
