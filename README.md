@@ -44,7 +44,7 @@ var encrypted = crypto.encrypt([publicKey1, publicKey2, publicKey3], message);
 var encrypted = crypto.encrypt(publicKey, message, signature);
 ```
 
-**Sample output**
+**Pretty-printed sample output**
 ```js
 {
     "v": "hybrid-crypto-js_0.1.0",        // Current package version
@@ -54,12 +54,20 @@ var encrypted = crypto.encrypt(publicKey, message, signature);
         "d3:48:6a:e9:13...": "t9eds3..."
     },
     "cipher": "+iwVFsC2dECBQvwcm9DND..."  // Actual encrypted message
-    "signature": "sdL93kfdm12feds3C2..."  // Optional signature
+    "signature": "sdL93kfdm12feds3C2..."  // Signature (optional)
 }
 
 ```
+
 ### Decryption
 <a name="decryption" />
+
+Decrypting message with *Hybrid Crypto JS* is as easy as encrypting. Decryption function can decrypt any message which has been encrypted with keypair's public key.
+```js
+
+var encrypted = '{"v":"hybrid-crypto-js_0.1.0","iv":"CmtyaZTyzoAp1mTN...'
+
+```
 
 ### Signatures
 <a name="signatures" />
