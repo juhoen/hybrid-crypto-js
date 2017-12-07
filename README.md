@@ -117,7 +117,20 @@ Verification function return *true* or *false* depending on whether the verifica
 ### RSA keypairs
 <a name="rsa-keypairs" />
 
-*In progress*
+*Hybrid Crypto JS* RSA key generation function is based in (Forge)[https://github.com/digitalbazaar/forge#rsa] key pair generation function. As a difference *Hybrid Crypto JS* returns keypair in PEM format.
+
+```js
+// Initialize RSA-class
+var rsa = new RSA();
+
+// Generate RSA key pair
+rsa.generateKeypair(function(keypair) {
+    
+    // Callback function receives new keypair as a first argument
+    var publicKey = keypair.publicKey;
+    var privateKey = keypair.privateKey;
+});
+```
 
 ### React Native key management
 <a name="rn-key-management" />
