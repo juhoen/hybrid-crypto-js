@@ -41,6 +41,7 @@ import {crypt, keyManager, RSA} from 'hybrid-crypto-js';
 ```
 
 **Web**
+Download minified *hybrid-crypto.js* file [here](https://raw.githubusercontent.com/juhoen/hybrid-crypto-js/master/web/hybrid-crypto.js).
 ```html
 <script type="text/javascript" src="hybrid-crypto.js"></script>
 ```
