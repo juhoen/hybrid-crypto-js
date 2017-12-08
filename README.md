@@ -42,7 +42,7 @@ import {crypt, keyManager, RSA} from 'hybrid-crypto-js';
 
 **Web**
 ```html
-<script type="test/javascript" src="hybrid-crypto.js"></script>
+<script type="text/javascript" src="hybrid-crypto.js"></script>
 ```
 
 ## Features
