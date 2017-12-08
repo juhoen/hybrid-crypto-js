@@ -1,6 +1,6 @@
 # Hybrid Crypto JS
 
-[![NPM](https://nodei.co/npm/hybrid-crypto-js.png?mini=true)](https://nodei.co/npm/hybrid-crypto-js/)
+[![NPM](https://nodei.co/npm/hybrid-crypto-js.png?compact=true)](https://nodei.co/npm/hybrid-crypto-js/)
 
 ## Introduction
 
