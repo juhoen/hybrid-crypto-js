@@ -1,6 +1,6 @@
 {
   "name": "hybrid-crypto-js",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Hybrid (RSA+AES) encryption and decryption toolkit for JavaScript",
   "main": "lib/index.js",
   "scripts": {
