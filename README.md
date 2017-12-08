@@ -3,12 +3,14 @@
 [![NPM](https://nodei.co/npm/hybrid-crypto-js.png?mini=true)](https://nodei.co/npm/hybrid-crypto-js/)
 
 ## Introduction
-<a name="introduction" />
+
+<a name="introduction"></a>
 
 *Hybrid Crypto JS* is a hybrid (RSA+AES) encryption and decryption toolkit for JavaScript, including automatic and persistent key management on React Native. *Hybrid Crypto JS* combines RSA and AES encryption algorithms making it possible to efficiently encrypt and decrypt large messages.
 
 ## Documentation
-<a name="documentation" />
+
+<a name="documentation"></a>
 
 **Getting started**
 - [Introduction](#introduction)
@@ -24,7 +26,8 @@
 - [React Native key management](#rn-key-management)
 
 ### Installation
-<a name="installation" />
+
+<a name="installation"></a>
 
 ```
 npm install hybrid-crypto-js
@@ -45,7 +48,8 @@ import {crypto, keyManager, RSA} from 'hybrid-crypto-js';
 ## Features
 
 ### Encryption
-<a name="encryption" />
+
+<a name="encryption"></a>
 
 *Hybrid Crypto JS* provides basic encryption function which supports also multiple RSA keys, with or without [signature](#signatures). Encrypted message is outputted as a JSON string.
 ```js
@@ -77,7 +81,8 @@ var encrypted = crypto.encrypt(publicKey, message, signature);
 ```
 
 ### Decryption
-<a name="decryption" />
+
+<a name="decryption"></a>
 
 Decrypting message with *Hybrid Crypto JS* is as easy as encrypting. Decryption function can decrypt any message which has been encrypted with keypair's public key. Decrypted message is outputted as a JSON object.
 ```js
@@ -99,7 +104,8 @@ var message = decrypted.message;
 ```
 
 ### Signatures
-<a name="signatures" />
+
+<a name="signatures"></a>
 
 *Hybrid Crypto JS* provides simple message signing. When issuer signs a message, message receiver can be sure of the message issuer.
 
@@ -114,7 +120,8 @@ var encrypted = crypto.encrypt(receiverPublicKey, message, signature);
 ```
 
 ### Verifying
-<a name="verifying" />
+
+<a name="verifying"></a>
 
 Message receiver needs to have message issuer's public RSA key in order to verify message issuer.
 
@@ -131,7 +138,8 @@ var verified = crypto.verify(issuerPublicKey, decrypted);
 Verification function return *true* or *false* depending on whether the verification was successfull.
 
 ### RSA keypairs
-<a name="rsa-keypairs" />
+
+<a name="rsa-keypairs"></a>
 
 *Hybrid Crypto JS* RSA key generation function is based in [Forge](https://github.com/digitalbazaar/forge#rsa) key pair generation function. As a difference *Hybrid Crypto JS* returns keypair in PEM format.
 
@@ -165,7 +173,8 @@ var rsa = new RSA({
 
 
 ### React Native key management
-<a name="rn-key-management" />
+
+<a name="rn-key-management"></a>
 
 Key manager works when using React Native. It automatically generates, saves and fetches device specific keypair from the device's storage.
 
