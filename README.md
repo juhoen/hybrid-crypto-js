@@ -1,5 +1,7 @@
 # Hybrid Crypto JS
 
+*Hybrid Crypto JS currently supports only web browser and React Native environments. Node support will be added in near future.*
+
 [![NPM](https://nodei.co/npm/hybrid-crypto-js.png?compact=true)](https://nodei.co/npm/hybrid-crypto-js/)
 
 ## Introduction
