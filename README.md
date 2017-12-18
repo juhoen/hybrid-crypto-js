@@ -30,7 +30,7 @@
 <a name="installation"></a>
 
 ```
-npm install hybrid-crypto-js@beta
+npm install hybrid-crypto-js
 ```
 
 ### Importing
