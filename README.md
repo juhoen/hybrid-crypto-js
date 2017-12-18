@@ -1,7 +1,5 @@
 # Hybrid Crypto JS
 
-*Hybrid Crypto JS currently supports only web browser and React Native environments. Node support will be added in near future.*
-
 [![NPM](https://nodei.co/npm/hybrid-crypto-js.png?compact=true)](https://nodei.co/npm/hybrid-crypto-js/)
 
 ## Introduction
@@ -37,7 +35,15 @@ npm install hybrid-crypto-js@beta
 
 ### Importing
 
+**Node.js**
+
+```js
+var RSA = require('hybrid-crypto-js').RSA;
+var crypt = require('hybrid-crypto-js').crypt;
+```
+
 **React Native**
+
 ```js
 import {crypt, keyManager, RSA} from 'hybrid-crypto-js';
 ```
@@ -46,7 +52,7 @@ import {crypt, keyManager, RSA} from 'hybrid-crypto-js';
 
 Download minified *hybrid-crypto.js* file [here](https://raw.githubusercontent.com/juhoen/hybrid-crypto-js/master/web/hybrid-crypto.js).
 ```html
-<script type="text/javascript" src="hybrid-crypto.js"></script>
+<script type="text/javascript" src="hybrid-crypto.min.js"></script>
 ```
 
 ## Features
@@ -56,9 +62,8 @@ Download minified *hybrid-crypto.js* file [here](https://raw.githubusercontent.c
 <a name="encryption"></a>
 
 *Hybrid Crypto JS* provides basic encryption function which supports also multiple RSA keys, with or without [signature](#signatures). Encrypted message is outputted as a JSON string.
-```js
-import {crypt} from 'hybrid-crypto-js';
 
+```js
 var message = 'Hello world!';
 
 // Encryption with one public RSA key
@@ -91,9 +96,8 @@ var encrypted = crypt.encrypt(publicKey, message, signature);
 <a name="decryption"></a>
 
 Decrypting message with *Hybrid Crypto JS* is as easy as encrypting. Decryption function can decrypt any message which has been encrypted with keypair's public key. Decrypted message is outputted as a JSON object.
-```js
-import {crypt} from 'hybrid-crypto-js';
 
+```js
 var encrypted = '{"v":"hybrid-crypto-js_0.1.0","iv":"CmtyaZTyzoAp1mTN...';
 
 // Decrypt encryped message with private RSA key
@@ -117,8 +121,6 @@ var message = decrypted.message;
 *Hybrid Crypto JS* provides simple message signing. When issuer signs a message, message receiver can be sure of the message issuer.
 
 ```js
-import {crypt} from 'hybrid-crypto-js';
-
 var message = 'Hello world!';
 
 // Create a signature with ISSUER's private RSA key
@@ -135,8 +137,6 @@ var encrypted = crypt.encrypt(receiverPublicKey, message, signature);
 Message receiver needs to have message issuer's public RSA key in order to verify message issuer.
 
 ```js
-import {crypt} from 'hybrid-crypto-js';
-
 // Encrypted message with signature
 var encrypted = '{"v":"hybri... ..."signature":"sdL93kfd...';
 
@@ -155,8 +155,6 @@ Verification function return *true* or *false* depending on whether the verifica
 *Hybrid Crypto JS* RSA key generation function is based in [Forge](https://github.com/digitalbazaar/forge#rsa) key pair generation function. As a difference *Hybrid Crypto JS* returns keypair in PEM format.
 
 ```js
-import {RSA} from 'hybrid-crypto-js';
-
 // Initialize RSA-class
 var rsa = new RSA();
 
