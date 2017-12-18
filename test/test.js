@@ -4,9 +4,9 @@ var assert = require('chai').assert;
 var should = require('chai').should();
 var expect = require('chai').expect;
 
-var crypto = require('../lib/crypto');
+var crypto = require('../lib/crypt');
 var helpers = require('../lib/helpers');
-import RSA from '../lib/rsa';
+var RSA = require('../lib/rsa');
 
 describe('RSA', function() {
 
@@ -14,7 +14,7 @@ describe('RSA', function() {
         saveKeys: false,
         keySize: 512,
     }
-
+    console.log(RSA)
     var rsa = new RSA(options);
     var keyGenerateTimeout = 2000;
     var keypair;
