@@ -50,7 +50,7 @@ import {crypt, keyManager, RSA} from 'hybrid-crypto-js';
 
 **Web**
 
-Download minified *hybrid-crypto.min.js* file [here](https://raw.githubusercontent.com/juhoen/hybrid-crypto-js/master/web/hybrid-crypto.min.js) and non-minified from [here](https://raw.githubusercontent.com/juhoen/hybrid-crypto-js/master/web/hybrid-crypto.js).
+Download minified *hybrid-crypto.min.js* file [here](https://raw.githubusercontent.com/juhoen/hybrid-crypto-js/master/web/hybrid-crypto.min.js).
 ```html
 <script type="text/javascript" src="hybrid-crypto.min.js"></script>
 ```
