@@ -79,7 +79,7 @@ var encrypted = crypt.encrypt(publicKey, message, signature);
 **Pretty-printed sample output**
 ```js
 {
-    "v": "hybrid-crypto-js_0.1.0",        // Current package version
+    "v": "hybrid-crypto-js_0.1.2",        // Current package version
     "iv": "CmtyaZTyzoAp1mTNUTztic0v1...", // Initialization vector
     "keys": {                             // Encrypted AES keys by RSA fingerprints
         "85:3d:10:e1:56...": "bHaTF9...",
