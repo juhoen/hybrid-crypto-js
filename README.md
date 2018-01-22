@@ -18,6 +18,7 @@
 - [Installation](#installation)
 
 **Features**
+- [Initialization](#initialization)
 - [Encryption](#encryption)
 - [Decryption](#decryption)
 - [Signatures](#signatures)
@@ -39,13 +40,13 @@ npm install hybrid-crypto-js
 
 ```js
 var RSA = require('hybrid-crypto-js').RSA;
-var crypt = require('hybrid-crypto-js').crypt;
+var Crypt = require('hybrid-crypto-js').Crypt;
 ```
 
 **React Native**
 
 ```js
-import {crypt, keyManager, RSA} from 'hybrid-crypto-js';
+import {Crypt, keyManager, RSA} from 'hybrid-crypto-js';
 ```
 
 **Web**
@@ -56,6 +57,20 @@ Download minified *hybrid-crypto.min.js* file [here](https://raw.githubuserconte
 ```
 
 ## Features
+
+### Initialization
+
+<a name="initialization"></a>
+
+```js
+// Basic initialization
+var crypt = new Crypt();
+var rsa = new RSA();
+
+// Increase amount of entropy
+var crypt = new Crypt({entropy: *Random string, int or float here*});
+var rsa = new RSA({entropy: *Random string, int or float here*});
+```
 
 ### Encryption
 
