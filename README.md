@@ -68,8 +68,9 @@ var crypt = new Crypt();
 var rsa = new RSA();
 
 // Increase amount of entropy
-var crypt = new Crypt({entropy: *Random string, int or float here*});
-var rsa = new RSA({entropy: *Random string, int or float here*});
+var entropy = "Random string, integer or float";
+var crypt = new Crypt({entropy: entropy});
+var rsa = new RSA({entropy: entropy});
 ```
 
 ### Encryption
