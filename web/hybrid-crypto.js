@@ -27714,7 +27714,7 @@ pki.verifyCertificateChain = function(caStore, chain, verify) {
 },{"./aes":5,"./asn1":7,"./des":11,"./forge":12,"./md":19,"./mgf":21,"./oids":23,"./pem":26,"./pss":34,"./rsa":37,"./util":44}],46:[function(require,module,exports){
 module.exports={
   "name": "hybrid-crypto-js",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Hybrid (RSA+AES) encryption and decryption toolkit for JavaScript",
   "main": "lib/index.js",
   "scripts": {
@@ -27740,9 +27740,11 @@ module.exports={
     "url": "https://github.com/juhoen/react-native-hybrid-crypto/issues"
   },
   "homepage": "https://github.com/juhoen/react-native-hybrid-crypto#readme",
+  "peerDependencies": {
+    "react-native": ">= 0.48.0"
+  },
   "dependencies": {
-    "node-forge": "^0.7.1",
-    "react-native": "^0.48.4"
+    "node-forge": "^0.7.1"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
