@@ -160,7 +160,7 @@ var encrypted = '{"v":"hybri... ..."signature":"sdL93kfd...';
 var decrypted = crypt.decrypt(receiverPrivateKey, encrypted);
 
 // Verify message with ISSUER's public key
-var verified = crypt.verify(issuerPublicKey, decrypted);
+var verified = crypt.verify(issuerPublicKey, decrypted.signature, decrypted.message);
 ```
 Verification function return *true* or *false* depending on whether the verification was successfull.
 
