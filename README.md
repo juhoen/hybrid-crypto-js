@@ -6,7 +6,7 @@
 
 <a name="introduction"></a>
 
-*Hybrid Crypto JS* is a hybrid (RSA+AES) encryption and decryption toolkit for JavaScript, including automatic and persistent key management on React Native. *Hybrid Crypto JS* combines RSA and AES encryption algorithms making it possible to efficiently encrypt and decrypt large messages. This cross-platform library is based on [Forge](https://github.com/digitalbazaar/forge).
+*Hybrid Crypto JS* is a hybrid (RSA+AES) encryption and decryption toolkit for JavaScript. *Hybrid Crypto JS* combines RSA and AES encryption algorithms making it possible to efficiently encrypt and decrypt large messages. This cross-platform library is based on [Forge](https://github.com/digitalbazaar/forge). *Hybrid Crypto JS* can be used in browsers, Node.js or React Native.
 
 ## Documentation
 
@@ -24,7 +24,6 @@
 - [Signatures](#signatures)
 - [Verifying](#verifying)
 - [RSA keypairs](#rsa-keypairs)
-- [React Native key management](#rn-key-management)
 
 ### Installation
 
@@ -46,7 +45,7 @@ var Crypt = require('hybrid-crypto-js').Crypt;
 **React Native**
 
 ```js
-import {Crypt, keyManager, RSA} from 'hybrid-crypto-js';
+import {Crypt, RSA} from 'hybrid-crypto-js';
 ```
 
 **Web**
@@ -196,23 +195,4 @@ var rsa = new RSA({
     rsaStandard: 'RSA-OAEP'  // RSA-OAEP or RSAES-PKCS1-V1_5, 
 });
 
-```
-
-
-### React Native key management
-
-<a name="rn-key-management"></a>
-
-Key manager works when using React Native. It automatically generates, saves and fetches device specific keypair from the device's storage.
-
-```js
-import {keyManager} from 'hybrid-crypto-js';
-
-// Get device specific RSA key pair
-keyManager.getKeys(function(keypair) {
-
-    // Callback function receives new keypair as a first argument
-    var publicKey = keypair.publicKey;
-    var privateKey = keypair.privateKey;
-});
 ```

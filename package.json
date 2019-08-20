@@ -5,30 +5,27 @@
   "main": "lib/index.js",
   "scripts": {
     "test": "mocha --require babel-core/register -R spec",
-    "webpack": "browserify lib/webpack.js -o web/hybrid-crypto.js -t [ babelify --presets [ react-native ] ]",
+    "webpack": "browserify lib/webpack.js -o web/hybrid-crypto.js",
     "uglify": "uglifyjs web/hybrid-crypto.js -o web/hybrid-crypto.min.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/juhoen/react-native-hybrid-crypto.git"
+    "url": "https://github.com/juhoen/hybrid-crypto-js.git"
   },
   "keywords": [
     "rsa",
     "aes",
     "rsa+aes",
-    "react-native",
     "react",
-    "native"
+    "node",
+    "react-native"
   ],
   "author": "Juho Enala <juho.enala@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/juhoen/react-native-hybrid-crypto/issues"
+    "url": "https://github.com/juhoen/hybrid-crypto-js/issues"
   },
-  "homepage": "https://github.com/juhoen/react-native-hybrid-crypto#readme",
-  "peerDependencies": {
-    "react-native": ">= 0.48.0"
-  },
+  "homepage": "https://github.com/juhoen/hybrid-crypto-js",
   "dependencies": {
     "node-forge": "^0.7.1"
   },
@@ -39,10 +36,5 @@
     "chai": "^4.1.2",
     "mocha": "^4.0.1",
     "uglify-js": "^3.2.1"
-  },
-  "babel": {
-    "presets": [
-      "react-native"
-    ]
   }
 }
