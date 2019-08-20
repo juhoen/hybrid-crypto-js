@@ -134,10 +134,11 @@ describe('Crypt', function() {
         var encrypted = crypt.encrypt(publicKey, message);
 
         // Decrypt message with corresponding private key
-        var decrypted = crypt.decrypt(privateKey2, encrypted);
+        expect(() => crypt.decrypt(privateKey2, encrypted)).to.throw();
+    });
 
-        // Output should be null
-        assert.equal(decrypted, null);
+    it('should fail validation with faulty encrypted message', function() {
+        expect(() => crypt.decrypt(privateKey, '{}')).to.throw("Encrypted message is not valid");
     });
 
     it('should create a signature', function() {
