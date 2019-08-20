@@ -172,7 +172,7 @@ var verified = crypt.verify(
 );
 ```
 
-Verification function returns _true_ or _false_ depending on whether the verification was successfull.
+Verification function returns _true_ or _false_ depending on whether the verification was successful.
 
 ### RSA keypairs
 
