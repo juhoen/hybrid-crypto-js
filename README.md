@@ -191,6 +191,12 @@ rsa.generateKeypair(function(keypair) {
     var privateKey = keypair.privateKey;
 });
 
+// ... or:
+rsa.generateKeypairAsync().then(keypair => {
+    var publicKey = keypair.publicKey;
+    var privateKey = keypair.privateKey;
+});
+
 // Generate 1024 bit RSA key pair
 rsa.generateKeypair(function(keypair) {
     // Callback function receives new 1024 bit keypair as a first argument

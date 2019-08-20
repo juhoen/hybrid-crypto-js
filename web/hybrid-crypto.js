@@ -234,6 +234,15 @@ var RSA = function () {
             pki.rsa.generateKeyPair({ bits: keySize || this.options.keySize, workers: -1 }, _done);
         }
     }, {
+        key: "generateKeypairAsync",
+        value: function generateKeypairAsync(keySize) {
+            var _this = this;
+
+            return new Promise(function (resolve) {
+                _this.generateKeypair(resolve, keySize);
+            });
+        }
+    }, {
         key: "_entropy",
         value: function _entropy(input) {
             var inputString = String(input);

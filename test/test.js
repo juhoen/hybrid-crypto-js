@@ -15,13 +15,19 @@ describe('RSA', function() {
     };
 
     var rsa = new RSA(options);
-    var keyGenerateTimeout = 2000;
     var keypair;
 
     // Generate keys before testing
     before(function(done) {
         rsa.generateKeypair(function(keys) {
             keypair = keys;
+            done();
+        });
+    });
+
+    it('should generate keypair', function(done) {
+        rsa.generateKeypairAsync().then(kp => {
+            assert.typeOf(kp, 'object');
             done();
         });
     });
