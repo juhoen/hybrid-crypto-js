@@ -76,7 +76,7 @@ var rsa = new RSA({entropy: entropy});
 
 <a name="encryption"></a>
 
-*Hybrid Crypto JS* provides basic encryption function which supports also multiple RSA keys, with or without [signature](#signatures). Encrypted message is outputted as a JSON string.
+*Hybrid Crypto JS* provides basic encryption function that also supports multiple RSA keys, with or without [signature](#signatures). Encrypted message is a JSON formatted string.
 
 ```js
 var message = 'Hello world!';
@@ -110,7 +110,7 @@ var encrypted = crypt.encrypt(publicKey, message, signature);
 
 <a name="decryption"></a>
 
-Decrypting message with *Hybrid Crypto JS* is as easy as encrypting. Decryption function can decrypt any message which has been encrypted with keypair's public key. Decrypted message is outputted as a JSON object.
+Decrypting message with *Hybrid Crypto JS* is as easy as encrypting. Decrypt function can decrypt any message which has been encrypted with keypair's public key. Decrypted message is a JSON object containing message and optional signature.
 
 ```js
 var encrypted = '{"v":"hybrid-crypto-js_0.1.0","iv":"CmtyaZTyzoAp1mTN...';
@@ -133,7 +133,7 @@ var message = decrypted.message;
 
 <a name="signatures"></a>
 
-*Hybrid Crypto JS* provides simple message signing. When issuer signs a message, message receiver can be sure of the message issuer.
+*Hybrid Crypto JS* provides simple message signing. Encrypted message can be signed with the issuer's private key.
 
 ```js
 var message = 'Hello world!';
@@ -161,7 +161,7 @@ var decrypted = crypt.decrypt(receiverPrivateKey, encrypted);
 // Verify message with ISSUER's public key
 var verified = crypt.verify(issuerPublicKey, decrypted.signature, decrypted.message);
 ```
-Verification function return *true* or *false* depending on whether the verification was successfull.
+Verification function returns *true* or *false* depending on whether the verification was successfull.
 
 ### RSA keypairs
 
@@ -173,7 +173,7 @@ Verification function return *true* or *false* depending on whether the verifica
 // Initialize RSA-class
 var rsa = new RSA();
 
-// Generate RSA key pair, defaults on 4096 bit key
+// Generate RSA key pair, default key size is 4096 bit
 rsa.generateKeypair(function(keypair) {
 
     // Callback function receives new keypair as a first argument
@@ -184,7 +184,7 @@ rsa.generateKeypair(function(keypair) {
 // Generate 1024 bit RSA key pair
 rsa.generateKeypair(function(keypair) {
 
-    // Callback function receives new 1024 bit keypair as an argument
+    // Callback function receives new 1024 bit keypair as a first argument
     var publicKey = keypair.publicKey;
     var privateKey = keypair.privateKey;
 }, 1024);  // Key size
