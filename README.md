@@ -161,7 +161,7 @@ var decrypted = crypt.decrypt(receiverPrivateKey, encrypted);
 // Verify message with ISSUER's public key
 var verified = crypt.verify(issuerPublicKey, decrypted.signature, decrypted.message);
 ```
-Verification function returns *true* or *false* depending on whether the verification was successfull.
+Verification function returns *true* or *false* depending on whether the verification was successful.
 
 ### RSA keypairs
 
