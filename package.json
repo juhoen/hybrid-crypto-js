@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "scripts": {
     "test": "mocha --require babel-core/register -R spec",
-    "webpack": "browserify lib/webpack.js -o web/hybrid-crypto.js",
+    "webpack": "browserify lib/webpack.js -o web/hybrid-crypto.js -t [ babelify --presets [ es2015 ] ]",
     "uglify": "uglifyjs web/hybrid-crypto.js -o web/hybrid-crypto.min.js"
   },
   "repository": {
@@ -32,7 +32,9 @@
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-preset-env": "1.6.0",
+    "babel-preset-es2015": "^6.24.1",
     "babelify": "^8.0.0",
+    "browserify": "^16.5.0",
     "chai": "^4.1.2",
     "mocha": "^4.0.1",
     "uglify-js": "^3.2.1"
