@@ -25,7 +25,7 @@ _Hybrid Crypto JS_ is a hybrid (RSA+AES) encryption and decryption toolkit for J
 -   [Decryption](#decryption)
 -   [Signatures](#signatures)
 -   [Verifying](#verifying)
--   [RSA keypairs](#rsa-keypairs)
+-   [RSA key pairs](#rsa-key-pairs)
 
 ### Installation
 
@@ -117,7 +117,7 @@ var encrypted = crypt.encrypt(publicKey, message, signature);
 
 <a name="decryption"></a>
 
-Decrypting message with _Hybrid Crypto JS_ is as easy as encrypting. Decrypt function can decrypt any message which has been encrypted with keypair's public key. The decrypted message is a JSON object containing a message and an optional signature.
+Decrypting message with _Hybrid Crypto JS_ is as easy as encrypting. Decrypt function can decrypt any message which has been encrypted with key pair's public key. The decrypted message is a JSON object containing a message and an optional signature.
 
 ```js
 var encrypted = '{"v":"hybrid-crypto-js_0.1.0","iv":"CmtyaZTyzoAp1mTN...';
@@ -182,9 +182,9 @@ var verified = crypt.verify(
 
 Verification function returns _true_ or _false_ depending on whether the verification was successful.
 
-### RSA keypairs
+### RSA keyPairs
 
-<a name="rsa-keypairs"></a>
+<a name="rsa-key-pairs"></a>
 
 _Hybrid Crypto JS_ RSA key generation function is based in [Forge](https://github.com/digitalbazaar/forge#rsa) key pair generation function. As a difference, _Hybrid Crypto JS_ returns key pair in PEM format.
 
@@ -193,23 +193,23 @@ _Hybrid Crypto JS_ RSA key generation function is based in [Forge](https://githu
 var rsa = new RSA();
 
 // Generate RSA key pair, default key size is 4096 bit
-rsa.generateKeypair(function(keypair) {
-    // Callback function receives new keypair as a first argument
-    var publicKey = keypair.publicKey;
-    var privateKey = keypair.privateKey;
+rsa.generateKeyPair(function(keyPair) {
+    // Callback function receives new key pair as a first argument
+    var publicKey = keyPair.publicKey;
+    var privateKey = keyPair.privateKey;
 });
 
 // ... or:
-rsa.generateKeypairAsync().then(keypair => {
-    var publicKey = keypair.publicKey;
-    var privateKey = keypair.privateKey;
+rsa.generateKeyPairAsync().then(keyPair => {
+    var publicKey = keyPair.publicKey;
+    var privateKey = keyPair.privateKey;
 });
 
 // Generate 1024 bit RSA key pair
-rsa.generateKeypair(function(keypair) {
-    // Callback function receives new 1024 bit keypair as a first argument
-    var publicKey = keypair.publicKey;
-    var privateKey = keypair.privateKey;
+rsa.generateKeyPair(function(keyPair) {
+    // Callback function receives new 1024 bit key pair as a first argument
+    var publicKey = keyPair.publicKey;
+    var privateKey = keyPair.privateKey;
 }, 1024); // Key size
 
 // RSA can be also initialized with options

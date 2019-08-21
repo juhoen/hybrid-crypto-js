@@ -15,33 +15,33 @@ describe('RSA', function() {
     };
 
     var rsa = new RSA(options);
-    var keypair;
+    var keyPair;
 
     // Generate keys before testing
     before(function(done) {
-        rsa.generateKeypair(function(keys) {
-            keypair = keys;
+        rsa.generateKeyPair(function(keys) {
+            keyPair = keys;
             done();
         });
     });
 
-    it('should generate keypair', function(done) {
-        rsa.generateKeypairAsync().then(kp => {
+    it('should generate key pair', function(done) {
+        rsa.generateKeyPairAsync().then(kp => {
             assert.typeOf(kp, 'object');
             done();
         });
     });
 
-    it('keypair should be object', function() {
-        assert.typeOf(keypair, 'object');
+    it('key pair should be object', function() {
+        assert.typeOf(keyPair, 'object');
     });
 
-    it("keypair's public key should be string", function() {
-        assert.typeOf(keypair.publicKey, 'string');
+    it("key pair's public key should be string", function() {
+        assert.typeOf(keyPair.publicKey, 'string');
     });
 
-    it("keypair's private key should be string", function() {
-        assert.typeOf(keypair.privateKey, 'string');
+    it("key pair's private key should be string", function() {
+        assert.typeOf(keyPair.privateKey, 'string');
     });
 });
 
