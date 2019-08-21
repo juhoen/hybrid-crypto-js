@@ -155,7 +155,7 @@ var encrypted = crypt.encrypt(receiverPublicKey, message, signature);
 
 // Select default message digest
 var crypt = new Crypt({
-    md: 'sha512', // Options: sha1, sha256, sha384, sha512 and md5
+    md: 'sha512', // Options: sha1, sha256, sha384, sha512, and md5
 });
 ```
 
