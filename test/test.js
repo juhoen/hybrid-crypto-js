@@ -15,13 +15,19 @@ describe('RSA', function() {
     };
 
     var rsa = new RSA(options);
-    var keyGenerateTimeout = 2000;
     var keypair;
 
     // Generate keys before testing
     before(function(done) {
         rsa.generateKeypair(function(keys) {
             keypair = keys;
+            done();
+        });
+    });
+
+    it('should generate keypair', function(done) {
+        rsa.generateKeypairAsync().then(kp => {
+            assert.typeOf(kp, 'object');
             done();
         });
     });
@@ -134,10 +140,13 @@ describe('Crypt', function() {
         var encrypted = crypt.encrypt(publicKey, message);
 
         // Decrypt message with corresponding private key
-        var decrypted = crypt.decrypt(privateKey2, encrypted);
+        expect(() => crypt.decrypt(privateKey2, encrypted)).to.throw();
+    });
 
-        // Output should be null
-        assert.equal(decrypted, null);
+    it('should fail validation with faulty encrypted message', function() {
+        expect(() => crypt.decrypt(privateKey, '{}')).to.throw(
+            'Encrypted message is not valid',
+        );
     });
 
     it('should create a signature', function() {
