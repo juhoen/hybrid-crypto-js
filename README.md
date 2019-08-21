@@ -73,6 +73,9 @@ var rsa = new RSA();
 var entropy = 'Random string, integer or float';
 var crypt = new Crypt({ entropy: entropy });
 var rsa = new RSA({ entropy: entropy });
+
+// Select default message digest
+var crypt = new Crypt({ md: 'sha512' });
 ```
 
 ### Encryption
@@ -149,6 +152,11 @@ var signature = crypt.signature(issuerPrivateKey, message);
 
 // Encrypt message with RECEIVERS public RSA key and attach the signature
 var encrypted = crypt.encrypt(receiverPublicKey, message, signature);
+
+// Select default message digest
+var crypt = new Crypt({
+    md: 'sha512', // Options: sha1, sha256, sha384, sha512 and md5
+});
 ```
 
 ### Verifying
