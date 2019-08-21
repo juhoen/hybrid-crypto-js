@@ -6,7 +6,7 @@
 
 <a name="introduction"></a>
 
-_Hybrid Crypto JS_ is a hybrid (RSA+AES) encryption and decryption toolkit for JavaScript. _Hybrid Crypto JS_ combines RSA and AES encryption algorithms making it possible to efficiently encrypt and decrypt large messages. This cross-platform library is based on [Forge](https://github.com/digitalbazaar/forge). _Hybrid Crypto JS_ can be used in browsers, Node.js or React Native.
+_Hybrid Crypto JS_ is a hybrid (RSA+AES) encryption and decryption toolkit for JavaScript. _Hybrid Crypto JS_ combines RSA and AES encryption algorithms, making it possible to encrypt and decrypt large messages efficiently. This cross-platform library is based on [Forge](https://github.com/digitalbazaar/forge). _Hybrid Crypto JS_ can be used in browsers, Node.js, or React Native.
 
 ## Documentation
 
@@ -82,7 +82,7 @@ var crypt = new Crypt({ md: 'sha512' });
 
 <a name="encryption"></a>
 
-_Hybrid Crypto JS_ provides basic encryption function that also supports multiple RSA keys, with or without [signature](#signatures). Encrypted message is a JSON formatted string.
+_Hybrid Crypto JS_ provides basic encryption function that also supports multiple RSA keys, with or without [signature](#signatures). An encrypted message is a JSON formatted string.
 
 ```js
 var message = 'Hello world!';
@@ -117,7 +117,7 @@ var encrypted = crypt.encrypt(publicKey, message, signature);
 
 <a name="decryption"></a>
 
-Decrypting message with _Hybrid Crypto JS_ is as easy as encrypting. Decrypt function can decrypt any message which has been encrypted with keypair's public key. Decrypted message is a JSON object containing message and optional signature.
+Decrypting message with _Hybrid Crypto JS_ is as easy as encrypting. Decrypt function can decrypt any message which has been encrypted with keypair's public key. The decrypted message is a JSON object containing a message and an optional signature.
 
 ```js
 var encrypted = '{"v":"hybrid-crypto-js_0.1.0","iv":"CmtyaZTyzoAp1mTN...';
@@ -142,7 +142,7 @@ var message = decrypted.message;
 
 <a name="signatures"></a>
 
-_Hybrid Crypto JS_ provides simple message signing. Encrypted message can be signed with the issuer's private key.
+_Hybrid Crypto JS_ provides simple message signing. The encrypted message can be signed with the issuer's private key.
 
 ```js
 var message = 'Hello world!';
@@ -163,7 +163,7 @@ var crypt = new Crypt({
 
 <a name="verifying"></a>
 
-Message receiver needs to have message issuer's public RSA key in order to verify message issuer.
+The message receiver needs to have a message issuer's public RSA key in order to verify the message issuer.
 
 ```js
 // Encrypted message with signature
@@ -186,7 +186,7 @@ Verification function returns _true_ or _false_ depending on whether the verific
 
 <a name="rsa-keypairs"></a>
 
-_Hybrid Crypto JS_ RSA key generation function is based in [Forge](https://github.com/digitalbazaar/forge#rsa) key pair generation function. As a difference _Hybrid Crypto JS_ returns keypair in PEM format.
+_Hybrid Crypto JS_ RSA key generation function is based in [Forge](https://github.com/digitalbazaar/forge#rsa) key pair generation function. As a difference, _Hybrid Crypto JS_ returns key pair in PEM format.
 
 ```js
 // Initialize RSA-class
