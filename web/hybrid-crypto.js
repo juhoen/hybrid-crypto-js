@@ -1,16 +1,17 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
-"use strict";
+'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var helpers = require("./helpers");
-var forge = require("node-forge");
+var helpers = require('./helpers');
+var forge = require('node-forge');
 var pki = forge.pki;
 var rsa = pki.rsa;
 
-var AES_STANDARD = "AES-CBC";
+var AES_STANDARD = 'AES-CBC';
+var DEFAULT_MD = 'sha256';
 
 var Crypt = function () {
     function Crypt() {
@@ -18,54 +19,116 @@ var Crypt = function () {
 
         _classCallCheck(this, Crypt);
 
+        this.options = Object.assign({}, {
+            md: DEFAULT_MD,
+            entropy: undefined
+        }, options);
+
         // Add some entropy if available
-        if (options.entropy) this._entropy(options.entropy);
+        if (this.options.entropy) {
+            this._entropy(this.options.entropy);
+        }
     }
 
     _createClass(Crypt, [{
-        key: "fingerprint",
+        key: '_getMessageDigest',
+        value: function _getMessageDigest(messageDigest) {
+            switch (messageDigest) {
+                case 'sha1':
+                    return forge.md.sha1.create();
+
+                case 'sha256':
+                    return forge.md.sha256.create();
+
+                case 'sha384':
+                    return forge.md.sha384.create();
+
+                case 'sha512':
+                    return forge.md.sha512.create();
+
+                case 'md5':
+                    return forge.md.md5.create();
+
+                default:
+                    console.warn('Message digest "' + this.options.md + '" not found. Using default message digest "sha1" instead');
+                    return forge.md.sha1.create();
+            }
+        }
+    }, {
+        key: '_parseSignature',
+        value: function _parseSignature(_signature) {
+            // Try parsing signature string. This works if
+            // signature is generated with hybrid-crypto-js
+            // versions >= 0.2.1.
+            try {
+                return JSON.parse(_signature);
+            } catch (e) {
+                // Fallback to old signature type. This works
+                // with signatures generated with hybrid-cryto-js
+                // versions <= 0.2.0
+                return {
+                    signature: _signature,
+                    md: 'sha1',
+                    v: helpers.version()
+                };
+            }
+        }
+    }, {
+        key: 'fingerprint',
         value: function fingerprint(publicKey) {
             return pki.getPublicKeyFingerprint(publicKey, {
-                encoding: "hex",
-                delimiter: ":"
+                encoding: 'hex',
+                delimiter: ':'
             });
         }
     }, {
-        key: "signature",
+        key: 'signature',
         value: function signature(privateKey, message) {
             // Create SHA-1 checksum
-            var checkSum = forge.md.sha1.create();
-            checkSum.update(message, "utf8");
+            var checkSum = this._getMessageDigest(this.options.md);
+            checkSum.update(message, 'utf8');
 
-            // Sign checksum with private key
-            if (typeof privateKey === "string") privateKey = pki.privateKeyFromPem(privateKey);
+            // Accept both PEMs and forge private key objects
+            if (typeof privateKey === 'string') privateKey = pki.privateKeyFromPem(privateKey);
 
             var signature = privateKey.sign(checkSum);
+            var signature64 = forge.util.encode64(signature);
 
-            // Return base64 encoded signature
-            return forge.util.encode64(signature);
+            // Return signature in JSON format
+            return JSON.stringify({
+                signature: signature64,
+                md: this.options.md
+            });
         }
     }, {
-        key: "verify",
-        value: function verify(publicKey, signature, decrypted) {
+        key: 'verify',
+        value: function verify(publicKey, _signature, decrypted) {
             // Return false if no signature is defined
-            if (!signature) return false;
+            if (!_signature) return false;
+
+            // Parse signature object into actual signature and message digest type
+
+            var _parseSignature2 = this._parseSignature(_signature),
+                signature = _parseSignature2.signature,
+                md = _parseSignature2.md;
 
             // Create SHA-1 checksum
-            var checkSum = forge.md.sha1.create();
-            checkSum.update(decrypted, "utf8");
+
+
+            var checkSum = this._getMessageDigest(md);
+            checkSum.update(decrypted, 'utf8');
 
             // Base64 decode signature
             signature = forge.util.decode64(signature);
 
-            // Sign checksum with private key
-            if (typeof publicKey === "string") publicKey = pki.publicKeyFromPem(publicKey);
+            // Accept both PEMs and forge private key objects
+            if (typeof publicKey === 'string') publicKey = pki.publicKeyFromPem(publicKey);
 
             // Verify signature
             return publicKey.verify(checkSum.digest().getBytes(), signature);
         }
     }, {
-        key: "encrypt",
+        key: 'encrypt',
         value: function encrypt(publicKeys, message, signature) {
             var _this = this;
 
@@ -74,7 +137,7 @@ var Crypt = function () {
 
             // Map PEM keys to forge public key objects
             publicKeys = publicKeys.map(function (key) {
-                return typeof key === "string" ? pki.publicKeyFromPem(key) : key;
+                return typeof key === 'string' ? pki.publicKeyFromPem(key) : key;
             });
 
             // Generate random keys
@@ -84,13 +147,13 @@ var Crypt = function () {
             // Encrypt random key with all of the public keys
             var encryptedKeys = {};
             publicKeys.forEach(function (publicKey) {
-                var encryptedKey = publicKey.encrypt(key, "RSA-OAEP");
+                var encryptedKey = publicKey.encrypt(key, 'RSA-OAEP');
                 var fingerprint = _this.fingerprint(publicKey);
                 encryptedKeys[fingerprint] = forge.util.encode64(encryptedKey);
             });
 
             // Create buffer and cipher
-            var buffer = forge.util.createBuffer(message, "utf8");
+            var buffer = forge.util.createBuffer(message, 'utf8');
             var cipher = forge.cipher.createCipher(AES_STANDARD, key);
 
             // Actual encryption
@@ -110,7 +173,7 @@ var Crypt = function () {
             return JSON.stringify(payload);
         }
     }, {
-        key: "decrypt",
+        key: 'decrypt',
         value: function decrypt(privateKey, encrypted) {
             // Validate encrypted message
             this._validate(encrypted);
@@ -120,7 +183,7 @@ var Crypt = function () {
 
             // Accept both PEMs and forge private key objects
             // Cast PEM to forge private key object
-            if (typeof privateKey === "string") privateKey = pki.privateKeyFromPem(privateKey);
+            if (typeof privateKey === 'string') privateKey = pki.privateKeyFromPem(privateKey);
 
             // Get key fingerprint
             var fingerprint = this.fingerprint(privateKey);
@@ -137,7 +200,7 @@ var Crypt = function () {
             var cipher = forge.util.decode64(payload.cipher);
 
             // Use RSA to decrypt AES key
-            var key = privateKey.decrypt(keyBytes, "RSA-OAEP");
+            var key = privateKey.decrypt(keyBytes, 'RSA-OAEP');
 
             // Create buffer and decipher
             var buffer = forge.util.createBuffer(cipher);
@@ -158,15 +221,14 @@ var Crypt = function () {
             return output;
         }
     }, {
-        key: "_validate",
+        key: '_validate',
         value: function _validate(encrypted) {
             var p = JSON.parse(encrypted);
-            if (!(
-            // Check required properties
-            p.hasOwnProperty("v") && p.hasOwnProperty("iv") && p.hasOwnProperty("keys") && p.hasOwnProperty("cipher"))) throw "Encrypted message is not valid";
+            if (!( // Check required properties
+            p.hasOwnProperty('v') && p.hasOwnProperty('iv') && p.hasOwnProperty('keys') && p.hasOwnProperty('cipher'))) throw 'Encrypted message is not valid';
         }
     }, {
-        key: "_entropy",
+        key: '_entropy',
         value: function _entropy(input) {
             var inputString = String(input);
             var bytes = forge.util.encodeUtf8(inputString);
@@ -181,29 +243,29 @@ var Crypt = function () {
 module.exports = Crypt;
 
 },{"./helpers":2,"node-forge":17}],2:[function(require,module,exports){
-"use strict";
+'use strict';
 
-var pkg = require("../package.json");
+var pkg = require('../package.json');
 
 var helpers = {
-	version: function version() {
-		return pkg.name + "_" + pkg.version;
-	},
-	toArray: function toArray(obj) {
-		return Array.isArray(obj) ? obj : [obj];
-	}
+    version: function version() {
+        return pkg.name + '_' + pkg.version;
+    },
+    toArray: function toArray(obj) {
+        return Array.isArray(obj) ? obj : [obj];
+    }
 };
 
 module.exports = helpers;
 
 },{"../package.json":51}],3:[function(require,module,exports){
-"use strict";
+'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var forge = require("node-forge");
+var forge = require('node-forge');
 var pki = forge.pki;
 
 var RSA = function () {
@@ -212,7 +274,7 @@ var RSA = function () {
 
         this.options = Object.assign({}, {
             keySize: 4096,
-            rsaStandard: "RSA-OAEP",
+            rsaStandard: 'RSA-OAEP',
             entropy: undefined
         }, options);
 
@@ -220,7 +282,7 @@ var RSA = function () {
     }
 
     _createClass(RSA, [{
-        key: "generateKeypair",
+        key: 'generateKeypair',
         value: function generateKeypair(callback, keySize) {
             var _done = function _done(err, keypair) {
                 // Cast keypair to PEMs
@@ -234,7 +296,7 @@ var RSA = function () {
             pki.rsa.generateKeyPair({ bits: keySize || this.options.keySize, workers: -1 }, _done);
         }
     }, {
-        key: "generateKeypairAsync",
+        key: 'generateKeypairAsync',
         value: function generateKeypairAsync(keySize) {
             var _this = this;
 
@@ -243,7 +305,7 @@ var RSA = function () {
             });
         }
     }, {
-        key: "_entropy",
+        key: '_entropy',
         value: function _entropy(input) {
             var inputString = String(input);
             var bytes = forge.util.encodeUtf8(inputString);
@@ -29504,46 +29566,46 @@ exports.clearImmediate = typeof clearImmediate === "function" ? clearImmediate :
 }).call(this,require("timers").setImmediate,require("timers").clearImmediate)
 },{"process/browser.js":49,"timers":50}],51:[function(require,module,exports){
 module.exports={
-  "name": "hybrid-crypto-js",
-  "version": "0.2.0",
-  "description": "Hybrid (RSA+AES) encryption and decryption toolkit for JavaScript",
-  "main": "lib/index.js",
-  "scripts": {
-    "test": "mocha --require babel-core/register -R spec",
-    "webpack": "browserify lib/webpack.js -o web/hybrid-crypto.js -t [ babelify --presets [ es2015 ] ]",
-    "uglify": "uglifyjs web/hybrid-crypto.js -o web/hybrid-crypto.min.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/juhoen/hybrid-crypto-js.git"
-  },
-  "keywords": [
-    "rsa",
-    "aes",
-    "rsa+aes",
-    "react",
-    "node",
-    "react-native"
-  ],
-  "author": "Juho Enala <juho.enala@gmail.com>",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/juhoen/hybrid-crypto-js/issues"
-  },
-  "homepage": "https://github.com/juhoen/hybrid-crypto-js",
-  "dependencies": {
-    "node-forge": "^0.7.1"
-  },
-  "devDependencies": {
-    "babel-core": "^6.26.0",
-    "babel-preset-env": "1.6.0",
-    "babel-preset-es2015": "^6.24.1",
-    "babelify": "^8.0.0",
-    "browserify": "^16.5.0",
-    "chai": "^4.1.2",
-    "mocha": "^4.0.1",
-    "uglify-js": "^3.2.1"
-  }
+    "name": "hybrid-crypto-js",
+    "version": "0.2.1",
+    "description": "Hybrid (RSA+AES) encryption and decryption toolkit for JavaScript",
+    "main": "lib/index.js",
+    "scripts": {
+        "test": "mocha --require babel-core/register -R spec",
+        "webpack": "browserify lib/webpack.js -o web/hybrid-crypto.js -t [ babelify --presets [ es2015 ] ]",
+        "uglify": "uglifyjs web/hybrid-crypto.js -o web/hybrid-crypto.min.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/juhoen/hybrid-crypto-js.git"
+    },
+    "keywords": [
+        "rsa",
+        "aes",
+        "rsa+aes",
+        "react",
+        "node",
+        "react-native"
+    ],
+    "author": "Juho Enala <juho.enala@gmail.com>",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/juhoen/hybrid-crypto-js/issues"
+    },
+    "homepage": "https://github.com/juhoen/hybrid-crypto-js",
+    "dependencies": {
+        "node-forge": "^0.7.1"
+    },
+    "devDependencies": {
+        "babel-core": "^6.26.0",
+        "babel-preset-env": "1.6.0",
+        "babel-preset-es2015": "^6.24.1",
+        "babelify": "^8.0.0",
+        "browserify": "^16.5.0",
+        "chai": "^4.1.2",
+        "mocha": "^4.0.1",
+        "uglify-js": "^3.2.1"
+    }
 }
 
 },{}]},{},[4]);
