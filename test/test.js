@@ -232,6 +232,48 @@ describe('Crypt', function() {
         // Signature should be verified
         assert.equal(verified, true);
     });
+
+    it('should sign message with different message digests', function() {
+        // Issuer keys
+        var issuerPublicKey = publicKey2;
+        var issuerPrivateKey = privateKey2;
+
+        var message = 'Test message';
+
+        // Update message digest option
+        crypt.options.md = 'sha512';
+
+        var signature = crypt.signature(issuerPrivateKey, message);
+        var verified = crypt.verify(issuerPublicKey, signature, message);
+
+        // Signature should be verified
+        assert.equal(verified, true);
+
+        // Signature should be verified even if other digest is selected
+        crypt.options.md = 'md5';
+        var verified2 = crypt.verify(issuerPublicKey, signature, message);
+        assert.equal(verified2, true);
+    });
+
+    it('should sign message wirh any message digest', function() {
+        const _testSignAndVerify = md => {
+            // Issuer keys
+            var issuerPublicKey = publicKey2;
+            var issuerPrivateKey = privateKey2;
+            var message = 'Another message';
+
+            crypt.options.md = md;
+            var signature = crypt.signature(issuerPrivateKey, message);
+            var verified = crypt.verify(issuerPublicKey, signature, message);
+
+            assert.equal(verified, true);
+        };
+
+        // Test sign & verify with all the message digests
+        ['sha1', 'sha256', 'sha384', 'sha512', 'md5'].map(md =>
+            _testSignAndVerify(md),
+        );
+    });
 });
 
 describe('Helpers', function() {
