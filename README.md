@@ -182,7 +182,7 @@ var verified = crypt.verify(
 
 Verification function returns _true_ or _false_ depending on whether the verification was successful.
 
-### RSA keyPairs
+### RSA key pairs
 
 <a name="rsa-key-pairs"></a>
 
