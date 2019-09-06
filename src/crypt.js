@@ -9,7 +9,6 @@ class Crypt {
 
 	constructor(options: Object = {}) {
 		this.options = Object.assign(
-			{},
 			{
 				md: DEFAULT_MESSAGE_DIGEST,
 				entropy: undefined,
@@ -32,17 +31,9 @@ class Crypt {
 	 * @method
 	 */
 	_getMessageDigest(messageDigest: string): Object {
-		const messageDigests = {
-			sha1: forge.md.sha1,
-			sha256: forge.md.sha256,
-			sha384: forge.md.sha384,
-			sha512: forge.md.sha512,
-			md5: forge.md.md5,
-		};
-
 		// Case: Message digest found
-		if (messageDigest in messageDigests) {
-			return messageDigests[messageDigest].create();
+		if (messageDigest in forge.md) {
+			return forge.md[messageDigest].create();
 		}
 
 		// Case: Message digest type not found
@@ -51,7 +42,7 @@ class Crypt {
 			const warning = `Message digest "${this.options.md}" not found. Using default message digest "sha1" instead`;
 			console.warn(warning);
 
-			return messageDigests['sha1'].create();
+			return forge.md.sha1.create();
 		}
 	}
 

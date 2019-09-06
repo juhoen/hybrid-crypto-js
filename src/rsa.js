@@ -7,7 +7,6 @@ class RSA {
 
 	constructor(options: Object = {}) {
 		this.options = Object.assign(
-			{},
 			{
 				keySize: 4096,
 				rsaStandard: 'RSA-OAEP',

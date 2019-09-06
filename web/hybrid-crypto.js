@@ -33,7 +33,7 @@ function () {
 
     _classCallCheck(this, Crypt);
 
-    this.options = Object.assign({}, {
+    this.options = Object.assign({
       md: DEFAULT_MESSAGE_DIGEST,
       entropy: undefined
     }, options); // Add some entropy if available
@@ -55,22 +55,15 @@ function () {
   _createClass(Crypt, [{
     key: "_getMessageDigest",
     value: function _getMessageDigest(messageDigest) {
-      var messageDigests = {
-        sha1: forge.md.sha1,
-        sha256: forge.md.sha256,
-        sha384: forge.md.sha384,
-        sha512: forge.md.sha512,
-        md5: forge.md.md5
-      }; // Case: Message digest found
-
-      if (messageDigest in messageDigests) {
-        return messageDigests[messageDigest].create();
+      // Case: Message digest found
+      if (messageDigest in forge.md) {
+        return forge.md[messageDigest].create();
       } // Case: Message digest type not found
       // > Fallback to 'sha1'
       else {
           var warning = "Message digest \"".concat(this.options.md, "\" not found. Using default message digest \"sha1\" instead");
           console.warn(warning);
-          return messageDigests['sha1'].create();
+          return forge.md.sha1.create();
         }
     }
     /**
@@ -350,7 +343,7 @@ function () {
 
     _classCallCheck(this, RSA);
 
-    this.options = Object.assign({}, {
+    this.options = Object.assign({
       keySize: 4096,
       rsaStandard: 'RSA-OAEP',
       entropy: undefined
