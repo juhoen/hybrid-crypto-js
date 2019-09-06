@@ -32,27 +32,26 @@ class Crypt {
 	 * @method
 	 */
 	_getMessageDigest(messageDigest: string): Object {
-		switch (messageDigest) {
-			case 'sha1':
-				return forge.md.sha1.create();
+		const messageDigests = {
+			sha1: forge.md.sha1,
+			sha256: forge.md.sha256,
+			sha384: forge.md.sha384,
+			sha512: forge.md.sha512,
+			md5: forge.md.md5,
+		};
 
-			case 'sha256':
-				return forge.md.sha256.create();
+		// Case: Message digest found
+		if (messageDigest in messageDigests) {
+			messageDigests[messageDigest].create();
+		}
 
-			case 'sha384':
-				return forge.md.sha384.create();
+		// Case: Message digest type not found
+		// > Fallback to sha1
+		else {
+			const warning = `Message digest "${this.options.md}" not found. Using default message digest "sha1" instead`;
+			console.warn(warning);
 
-			case 'sha512':
-				return forge.md.sha512.create();
-
-			case 'md5':
-				return forge.md.md5.create();
-
-			default:
-				console.warn(
-					`Message digest "${this.options.md}" not found. Using default message digest "sha1" instead`,
-				);
-				return forge.md.sha1.create();
+			return messageDigests['sha1'].create();
 		}
 	}
 

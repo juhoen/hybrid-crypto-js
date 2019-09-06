@@ -55,26 +55,23 @@ function () {
   _createClass(Crypt, [{
     key: "_getMessageDigest",
     value: function _getMessageDigest(messageDigest) {
-      switch (messageDigest) {
-        case 'sha1':
-          return forge.md.sha1.create();
+      var messageDigests = {
+        sha1: forge.md.sha1,
+        sha256: forge.md.sha256,
+        sha384: forge.md.sha384,
+        sha512: forge.md.sha512,
+        md5: forge.md.md5
+      }; // Case: Message digest found
 
-        case 'sha256':
-          return forge.md.sha256.create();
-
-        case 'sha384':
-          return forge.md.sha384.create();
-
-        case 'sha512':
-          return forge.md.sha512.create();
-
-        case 'md5':
-          return forge.md.md5.create();
-
-        default:
-          console.warn("Message digest \"".concat(this.options.md, "\" not found. Using default message digest \"sha1\" instead"));
-          return forge.md.sha1.create();
-      }
+      if (messageDigest in messageDigests) {
+        messageDigests[messageDigest].create();
+      } // Case: Message digest type not found
+      // > Fallback to sha1
+      else {
+          var warning = "Message digest \"".concat(this.options.md, "\" not found. Using default message digest \"sha1\" instead");
+          console.warn(warning);
+          return messageDigests['sha1'].create();
+        }
     }
     /**
      * Parses hybrid-crypto-js signature
