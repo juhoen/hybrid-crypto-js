@@ -16,7 +16,9 @@ var rsa = pki.rsa;
 var AES_STANDARD = 'AES-CBC';
 var DEFAULT_MD = 'sha256';
 
-var Crypt = function () {
+var Crypt =
+/*#__PURE__*/
+function () {
   function Crypt() {
     var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
@@ -25,12 +27,21 @@ var Crypt = function () {
     this.options = Object.assign({}, {
       md: DEFAULT_MD,
       entropy: undefined
-    }, options);
+    }, options); // Add some entropy if available
 
     if (this.options.entropy) {
       this._entropy(this.options.entropy);
     }
   }
+  /**
+   * Returns message digest by type
+   *
+   * @param {String} messageDigest Message digest type as string
+   *
+   * @return {Object} Initialized message digest
+   * @method
+   */
+
 
   _createClass(Crypt, [{
     key: "_getMessageDigest",
@@ -56,12 +67,27 @@ var Crypt = function () {
           return forge.md.sha1.create();
       }
     }
+    /**
+     * Parses hybrid-crypto-js signature
+     *
+     * @param {String} _signature Signature string. Either JSON formatted string (>= hybrid-crypto-js 0.2.1) or plain signature
+     *
+     * @return {Object} Parsed signature
+     * @method
+     */
+
   }, {
     key: "_parseSignature",
     value: function _parseSignature(_signature) {
+      // Try parsing signature string. This works if
+      // signature is generated with hybrid-crypto-js
+      // versions >= 0.2.1.
       try {
         return JSON.parse(_signature);
       } catch (e) {
+        // Fallback to old signature type. This works
+        // with signatures generated with hybrid-cryto-js
+        // versions <= 0.2.0
         return {
           signature: _signature,
           md: 'sha1',
@@ -69,6 +95,15 @@ var Crypt = function () {
         };
       }
     }
+    /**
+     * Returns fingerprint for any public key
+     *
+     * @param {Object} publicKey Forge public key object
+     *
+     * @return {String} Public key's fingerprint
+     * @method
+     */
+
   }, {
     key: "fingerprint",
     value: function fingerprint(publicKey) {
@@ -77,47 +112,91 @@ var Crypt = function () {
         delimiter: ':'
       });
     }
+    /**
+     * Signs a message
+     *
+     * @param {String} privateKey Private key in PEM format
+     * @param {String} message Message to sign
+     *
+     * @return {String} Signature and meta data as a JSON formatted string
+     * @method
+     */
+
   }, {
     key: "signature",
     value: function signature(privateKey, message) {
+      // Create SHA-1 checksum
       var checkSum = this._getMessageDigest(this.options.md);
 
-      checkSum.update(message, 'utf8');
+      checkSum.update(message, 'utf8'); // Accept both PEMs and forge private key objects
+
       if (typeof privateKey === 'string') privateKey = pki.privateKeyFromPem(privateKey);
       var signature = privateKey.sign(checkSum);
-      var signature64 = forge.util.encode64(signature);
+      var signature64 = forge.util.encode64(signature); // Return signature in JSON format
+
       return JSON.stringify({
         signature: signature64,
         md: this.options.md
       });
     }
+    /**
+     * Verifies a message
+     *
+     * @param {String} publicKey Public key in PEM format
+     * @param {String} _signature Signature in JSON string format
+     * @param {String} decrypted Decrypted message
+     *
+     * @return {Boolean} Tells whether verification were successful or not
+     * @method
+     */
+
   }, {
     key: "verify",
     value: function verify(publicKey, _signature, decrypted) {
-      if (!_signature) return false;
+      // Return false if no signature is defined
+      if (!_signature) return false; // Parse signature object into actual signature and message digest type
 
       var _this$_parseSignature = this._parseSignature(_signature),
           signature = _this$_parseSignature.signature,
-          md = _this$_parseSignature.md;
+          md = _this$_parseSignature.md; // Create SHA-1 checksum
+
 
       var checkSum = this._getMessageDigest(md);
 
-      checkSum.update(decrypted, 'utf8');
-      signature = forge.util.decode64(signature);
-      if (typeof publicKey === 'string') publicKey = pki.publicKeyFromPem(publicKey);
+      checkSum.update(decrypted, 'utf8'); // Base64 decode signature
+
+      signature = forge.util.decode64(signature); // Accept both PEMs and forge private key objects
+
+      if (typeof publicKey === 'string') publicKey = pki.publicKeyFromPem(publicKey); // Verify signature
+
       return publicKey.verify(checkSum.digest().getBytes(), signature);
     }
+    /**
+     * Encrypts a message using public RSA key and optional signature
+     *
+     * @param {String[]} publicKeys Public keys in PEM format
+     * @param {String} message Message to encrypt
+     * @param {String} signature Optional signature
+     *
+     * @return {String} Encrypted message and metadata as a JSON formatted string
+     * @method
+     */
+
   }, {
     key: "encrypt",
     value: function encrypt(publicKeys, message, signature) {
       var _this = this;
 
-      publicKeys = helpers.toArray(publicKeys);
+      // Generate flat array of keys
+      publicKeys = helpers.toArray(publicKeys); // Map PEM keys to forge public key objects
+
       publicKeys = publicKeys.map(function (key) {
         return typeof key === 'string' ? pki.publicKeyFromPem(key) : key;
-      });
+      }); // Generate random keys
+
       var iv = forge.random.getBytesSync(32);
-      var key = forge.random.getBytesSync(32);
+      var key = forge.random.getBytesSync(32); // Encrypt random key with all of the public keys
+
       var encryptedKeys = {};
       publicKeys.forEach(function (publicKey) {
         var encryptedKey = publicKey.encrypt(key, 'RSA-OAEP');
@@ -125,43 +204,69 @@ var Crypt = function () {
         var fingerprint = _this.fingerprint(publicKey);
 
         encryptedKeys[fingerprint] = forge.util.encode64(encryptedKey);
-      });
+      }); // Create buffer and cipher
+
       var buffer = forge.util.createBuffer(message, 'utf8');
-      var cipher = forge.cipher.createCipher(AES_STANDARD, key);
+      var cipher = forge.cipher.createCipher(AES_STANDARD, key); // Actual encryption
+
       cipher.start({
         iv: iv
       });
       cipher.update(buffer);
-      cipher.finish();
+      cipher.finish(); // Attach encrypted message int payload
+
       var payload = {};
       payload.v = helpers.version();
       payload.iv = forge.util.encode64(iv);
       payload.keys = encryptedKeys;
       payload.cipher = forge.util.encode64(cipher.output.data);
-      payload.signature = signature;
+      payload.signature = signature; // Return encrypted message
+
       return JSON.stringify(payload);
     }
+    /**
+     * Decrypts a message using private RSA key
+     *
+     * @param {String} privateKey Private key in PEM format
+     * @param {String} encrypted Message to decrypt
+     *
+     * @return {Object} Decrypted message and metadata as a JSON object
+     * @method
+     */
+
   }, {
     key: "decrypt",
     value: function decrypt(privateKey, encrypted) {
-      this._validate(encrypted);
+      // Validate encrypted message
+      this._validate(encrypted); // Parse encrypted string to JSON
 
-      var payload = JSON.parse(encrypted);
-      if (typeof privateKey === 'string') privateKey = pki.privateKeyFromPem(privateKey);
-      var fingerprint = this.fingerprint(privateKey);
-      var encryptedKey = payload.keys[fingerprint];
-      if (!encryptedKey) throw "RSA fingerprint doesn't match with any of the encrypted message's fingerprints";
+
+      var payload = JSON.parse(encrypted); // Accept both PEMs and forge private key objects
+      // Cast PEM to forge private key object
+
+      if (typeof privateKey === 'string') privateKey = pki.privateKeyFromPem(privateKey); // Get key fingerprint
+
+      var fingerprint = this.fingerprint(privateKey); // Get encrypted keys and encrypted message from the payload
+
+      var encryptedKey = payload.keys[fingerprint]; // Log error if key wasn't found
+
+      if (!encryptedKey) throw "RSA fingerprint doesn't match with any of the encrypted message's fingerprints"; // Get bytes of encrypted AES key, initialization vector and cipher
+
       var keyBytes = forge.util.decode64(encryptedKey);
       var iv = forge.util.decode64(payload.iv);
-      var cipher = forge.util.decode64(payload.cipher);
-      var key = privateKey.decrypt(keyBytes, 'RSA-OAEP');
+      var cipher = forge.util.decode64(payload.cipher); // Use RSA to decrypt AES key
+
+      var key = privateKey.decrypt(keyBytes, 'RSA-OAEP'); // Create buffer and decipher
+
       var buffer = forge.util.createBuffer(cipher);
-      var decipher = forge.cipher.createDecipher(AES_STANDARD, key);
+      var decipher = forge.cipher.createDecipher(AES_STANDARD, key); // Actual decryption
+
       decipher.start({
         iv: iv
       });
       decipher.update(buffer);
-      decipher.finish();
+      decipher.finish(); // Return utf-8 encoded bytes
+
       var bytes = decipher.output.getBytes();
       var decrypted = forge.util.decodeUtf8(bytes);
       var output = {};
@@ -169,12 +274,29 @@ var Crypt = function () {
       output.signature = payload.signature;
       return output;
     }
+    /**
+     * Validates encrypted message
+     *
+     * @param {String} encrypted Encrypted message
+     *
+     * @method
+     */
+
   }, {
     key: "_validate",
     value: function _validate(encrypted) {
       var p = JSON.parse(encrypted);
-      if (!(p.hasOwnProperty('v') && p.hasOwnProperty('iv') && p.hasOwnProperty('keys') && p.hasOwnProperty('cipher'))) throw 'Encrypted message is not valid';
+      if ( // Check required properties
+      !(p.hasOwnProperty('v') && p.hasOwnProperty('iv') && p.hasOwnProperty('keys') && p.hasOwnProperty('cipher'))) throw 'Encrypted message is not valid';
     }
+    /**
+     * Private function to add more entropy
+     *
+     * @param {String|Number} input Something random
+     *
+     * @method
+     */
+
   }, {
     key: "_entropy",
     value: function _entropy(input) {
@@ -214,7 +336,9 @@ var forge = require('node-forge');
 
 var pki = forge.pki;
 
-var RSA = function () {
+var RSA =
+/*#__PURE__*/
+function () {
   function RSA() {
     var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
@@ -227,19 +351,45 @@ var RSA = function () {
     }, options);
     if (this.options.entropy) this._entropy(this.options.entropy);
   }
+  /**
+   * Generates RSA keypair
+   *
+   * @param {function} callback Function that gets called when keys are generated
+   * @param {int} [keySize=4096] Integer that determines the RSA key size
+   *
+   * @example
+   * rsa.generateKeyPair(keys => console.log(keys), 1024);
+   *
+   * @method
+   */
+
 
   _createClass(RSA, [{
     key: "generateKeyPair",
     value: function generateKeyPair(callback, keySize) {
+      // Generate key pair using forge
       pki.rsa.generateKeyPair({
         bits: keySize || this.options.keySize,
         workers: -1
       }, function (err, keyPair) {
+        // Cast key pair to PEM format
         keyPair.publicKey = pki.publicKeyToPem(keyPair.publicKey);
         keyPair.privateKey = pki.privateKeyToPem(keyPair.privateKey);
         callback(keyPair);
       });
     }
+    /**
+     * Generates RSA keypair
+     *
+     * @param {int} [keySize=4096] Integer that determines the RSA key size
+     *
+     * @example
+     * rsa.generateKeyPair(1024).then(keys => console.log(keys));
+     *
+     * @return {Promise} Promise that gets resolved when generation is ready
+     * @method
+     */
+
   }, {
     key: "generateKeyPairAsync",
     value: function generateKeyPairAsync(keySize) {
@@ -249,6 +399,14 @@ var RSA = function () {
         _this.generateKeyPair(resolve, keySize);
       });
     }
+    /**
+     * Private function to add more entropy
+     *
+     * @param {String|Number} input Something random
+     *
+     * @method
+     */
+
   }, {
     key: "_entropy",
     value: function _entropy(input) {
@@ -29659,12 +29817,12 @@ module.exports={
     "description": "Hybrid (RSA+AES) encryption and decryption toolkit for JavaScript",
     "main": "lib/index.js",
     "scripts": {
-        "build": "babel src/ -d lib/",
         "prepublish": "npm run build",
         "test": "mocha --require babel-core/register -R spec",
         "webpack": "browserify lib/webpack.js -o web/hybrid-crypto.js",
         "uglify": "uglifyjs web/hybrid-crypto.js -o web/hybrid-crypto.min.js",
-        "flow": "flow"
+        "flow": "flow",
+        "build": "babel src/ -d lib/ && npm run webpack && npm run uglify"
     },
     "repository": {
         "type": "git",
