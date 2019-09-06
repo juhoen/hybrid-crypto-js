@@ -432,14 +432,8 @@ module.exports = RSA;
 },{"node-forge":18}],5:[function(require,module,exports){
 "use strict";
 
-var _crypt = _interopRequireDefault(require("./crypt"));
-
-var _rsa = _interopRequireDefault(require("./rsa"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-window.Crypt = _crypt.default;
-window.RSA = _rsa.default;
+window.Crypt = require('./crypt');
+window.RSA = require('./rsa');
 },{"./crypt":2,"./rsa":4}],6:[function(require,module,exports){
 
 },{}],7:[function(require,module,exports){

@@ -1,5 +1,5 @@
 // @flow
-var pkg = require('../package.json');
+const pkg = require('../package.json');
 
 module.exports = {
 	version: () => `${pkg.name}_${pkg.version}`,

@@ -1,6 +1,6 @@
 // @flow
-var forge = require('node-forge');
-var pki = forge.pki;
+const forge = require('node-forge');
+const { pki } = forge;
 
 class RSA {
 	options: Object;
