@@ -4,17 +4,18 @@ var forge = require('node-forge');
 var pki = forge.pki;
 var rsa = pki.rsa;
 
-const AES_STANDARD = 'AES-CBC';
-const DEFAULT_MD = 'sha256';
-
 class Crypt {
+	AES_STANDARD: string;
+	DEFAULT_MD: string;
 	options: Object;
 
 	constructor(options: Object = {}) {
+		this.AES_STANDARD = 'AES-CBC';
+		this.DEFAULT_MD = 'sha256';
 		this.options = Object.assign(
 			{},
 			{
-				md: DEFAULT_MD,
+				md: this.DEFAULT_MD,
 				entropy: undefined,
 			},
 			options,
@@ -197,7 +198,7 @@ class Crypt {
 
 		// Create buffer and cipher
 		const buffer = forge.util.createBuffer(message, 'utf8');
-		const cipher = forge.cipher.createCipher(AES_STANDARD, key);
+		const cipher = forge.cipher.createCipher(this.AES_STANDARD, key);
 
 		// Actual encryption
 		cipher.start({ iv });
@@ -257,7 +258,7 @@ class Crypt {
 
 		// Create buffer and decipher
 		const buffer = forge.util.createBuffer(cipher);
-		const decipher = forge.cipher.createDecipher(AES_STANDARD, key);
+		const decipher = forge.cipher.createDecipher(this.AES_STANDARD, key);
 
 		// Actual decryption
 		decipher.start({ iv });
