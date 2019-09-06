@@ -170,7 +170,7 @@ class Crypt {
 		publicKeys = helpers.toArray(publicKeys);
 
 		// Map PEM keys to forge public key objects
-		publicKeys = publicKeys.map(key =>
+		publicKeys = publicKeys.map((key: string | Object) =>
 			typeof key === 'string' ? pki.publicKeyFromPem(key) : key,
 		);
 
@@ -180,7 +180,7 @@ class Crypt {
 
 		// Encrypt random key with all of the public keys
 		const encryptedKeys = {};
-		publicKeys.forEach(publicKey => {
+		publicKeys.forEach((publicKey: Object) => {
 			const encryptedKey = publicKey.encrypt(key, 'RSA-OAEP');
 			const fingerprint = this.fingerprint(publicKey);
 			encryptedKeys[fingerprint] = forge.util.encode64(encryptedKey);
