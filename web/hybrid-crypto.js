@@ -64,9 +64,9 @@ function () {
       }; // Case: Message digest found
 
       if (messageDigest in messageDigests) {
-        messageDigests[messageDigest].create();
+        return messageDigests[messageDigest].create();
       } // Case: Message digest type not found
-      // > Fallback to sha1
+      // > Fallback to 'sha1'
       else {
           var warning = "Message digest \"".concat(this.options.md, "\" not found. Using default message digest \"sha1\" instead");
           console.warn(warning);
