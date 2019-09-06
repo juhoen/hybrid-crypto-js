@@ -30,7 +30,7 @@ class RSA {
 	 *
 	 * @method
 	 */
-	generateKeyPair(callback: Function, keySize: number) {
+	generateKeyPair(callback: Function, keySize: number): void {
 		// Generate key pair using forge
 		pki.rsa.generateKeyPair(
 			{ bits: keySize || this.options.keySize, workers: -1 },
@@ -55,7 +55,7 @@ class RSA {
 	 * @return {Promise} Promise that gets resolved when generation is ready
 	 * @method
 	 */
-	generateKeyPairAsync(keySize: number) {
+	generateKeyPairAsync(keySize: number): Object {
 		return new Promise<void>(resolve => {
 			this.generateKeyPair(resolve, keySize);
 		});
@@ -68,7 +68,7 @@ class RSA {
 	 *
 	 * @method
 	 */
-	_entropy(input: any) {
+	_entropy(input: any): void {
 		const inputString = String(input);
 		const bytes = forge.util.encodeUtf8(inputString);
 

@@ -31,7 +31,7 @@ class Crypt {
 	 * @return {Object} Initialized message digest
 	 * @method
 	 */
-	_getMessageDigest(messageDigest: string) {
+	_getMessageDigest(messageDigest: string): Object {
 		switch (messageDigest) {
 			case 'sha1':
 				return forge.md.sha1.create();
@@ -64,7 +64,7 @@ class Crypt {
 	 * @return {Object} Parsed signature
 	 * @method
 	 */
-	_parseSignature(_signature: string) {
+	_parseSignature(_signature: string): Object {
 		// Try parsing signature string. This works if
 		// signature is generated with hybrid-crypto-js
 		// versions >= 0.2.1.
@@ -90,7 +90,7 @@ class Crypt {
 	 * @return {String} Public key's fingerprint
 	 * @method
 	 */
-	fingerprint(publicKey: Object) {
+	fingerprint(publicKey: Object): string {
 		return pki.getPublicKeyFingerprint(publicKey, {
 			encoding: 'hex',
 			delimiter: ':',
@@ -106,7 +106,7 @@ class Crypt {
 	 * @return {String} Signature and meta data as a JSON formatted string
 	 * @method
 	 */
-	signature(privateKey: string | Object, message: string) {
+	signature(privateKey: string | Object, message: string): string {
 		// Create SHA-1 checksum
 		const checkSum = this._getMessageDigest(this.options.md);
 		checkSum.update(message, 'utf8');
@@ -135,7 +135,11 @@ class Crypt {
 	 * @return {Boolean} Tells whether verification were successful or not
 	 * @method
 	 */
-	verify(publicKey: string | Object, _signature: string, decrypted: string) {
+	verify(
+		publicKey: string | Object,
+		_signature: string,
+		decrypted: string,
+	): boolean {
 		// Return false if no signature is defined
 		if (!_signature) return false;
 
@@ -171,7 +175,7 @@ class Crypt {
 		publicKeys: string[] | Object[],
 		message: string,
 		signature: string,
-	) {
+	): string {
 		// Generate flat array of keys
 		publicKeys = helpers.toArray(publicKeys);
 
@@ -222,7 +226,7 @@ class Crypt {
 	 * @return {Object} Decrypted message and metadata as a JSON object
 	 * @method
 	 */
-	decrypt(privateKey: string | Object, encrypted: string) {
+	decrypt(privateKey: string | Object, encrypted: string): Object {
 		// Validate encrypted message
 		this._validate(encrypted);
 
@@ -278,7 +282,7 @@ class Crypt {
 	 *
 	 * @method
 	 */
-	_validate(encrypted: string) {
+	_validate(encrypted: string): void {
 		const p = JSON.parse(encrypted);
 		if (
 			// Check required properties
@@ -299,7 +303,7 @@ class Crypt {
 	 *
 	 * @method
 	 */
-	_entropy(input: any) {
+	_entropy(input: any): void {
 		const inputString = String(input);
 		const bytes = forge.util.encodeUtf8(inputString);
 
