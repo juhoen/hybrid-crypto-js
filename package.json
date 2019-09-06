@@ -4,12 +4,12 @@
     "description": "Hybrid (RSA+AES) encryption and decryption toolkit for JavaScript",
     "main": "lib/index.js",
     "scripts": {
-        "build": "babel src/ -d lib/",
         "prepublish": "npm run build",
         "test": "mocha --require babel-core/register -R spec",
         "webpack": "browserify lib/webpack.js -o web/hybrid-crypto.js",
         "uglify": "uglifyjs web/hybrid-crypto.js -o web/hybrid-crypto.min.js",
-        "flow": "flow"
+        "flow": "flow",
+        "build": "babel src/ -d lib/ && npm run webpack && npm run uglify"
     },
     "repository": {
         "type": "git",
