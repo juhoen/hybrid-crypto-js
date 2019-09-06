@@ -5,11 +5,12 @@
     "main": "lib/index.js",
     "scripts": {
         "prepublish": "npm run build",
-        "test": "mocha --require babel-core/register -R spec",
         "webpack": "browserify lib/webpack.js -o web/hybrid-crypto.js",
         "uglify": "uglifyjs web/hybrid-crypto.js -o web/hybrid-crypto.min.js",
         "flow": "flow",
-        "build": "babel src/ -d lib/ && npm run webpack && npm run uglify"
+        "babel": "babel src/ -d lib/",
+        "build": "npm run babel && npm run webpack && npm run uglify",
+        "test": "npm run babel && mocha -R spec"
     },
     "repository": {
         "type": "git",
