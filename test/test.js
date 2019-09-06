@@ -269,10 +269,16 @@ describe('Crypt', function() {
             assert.equal(verified, true);
         };
 
+        // Save original md
+        const originalMd = crypt.options.md;
+
         // Test sign & verify with all the message digests
         ['sha1', 'sha256', 'sha384', 'sha512', 'md5'].map(md =>
             _testSignAndVerify(md),
         );
+
+        // Revert original md after testing
+        crypt.options.md = originalMd;
     });
 });
 
