@@ -171,7 +171,7 @@ class Crypt {
 	 * @method
 	 */
 	encrypt(
-		publicKeys: string[] | Object[],
+		publicKeys: string | string[] | Object | Object[],
 		message: string,
 		signature: string,
 	): string {
