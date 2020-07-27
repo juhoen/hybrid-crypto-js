@@ -3,10 +3,18 @@
 
 module.exports = {
   AES_STANDARD: 'AES-CBC',
-  DEFAULT_MESSAGE_DIGEST: 'sha256'
+  RSA_STANDARD: 'RSA-OAEP',
+  DEFAULT_MESSAGE_DIGEST: 'sha256',
+  DEFAULT_AES_KEY_SIZE: 256
 };
 },{}],2:[function(require,module,exports){
 "use strict";
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -23,7 +31,9 @@ var pki = forge.pki,
 
 var _require = require('./constants'),
     DEFAULT_MESSAGE_DIGEST = _require.DEFAULT_MESSAGE_DIGEST,
-    AES_STANDARD = _require.AES_STANDARD;
+    DEFAULT_AES_KEY_SIZE = _require.DEFAULT_AES_KEY_SIZE,
+    AES_STANDARD = _require.AES_STANDARD,
+    RSA_STANDARD = _require.RSA_STANDARD;
 
 var Crypt =
 /*#__PURE__*/
@@ -33,8 +43,11 @@ function () {
 
     _classCallCheck(this, Crypt);
 
-    this.options = Object.assign({}, {
+    this.options = _objectSpread({
       md: DEFAULT_MESSAGE_DIGEST,
+      aesKeySize: DEFAULT_AES_KEY_SIZE,
+      aesStandard: AES_STANDARD,
+      rsaStandard: RSA_STANDARD,
       entropy: undefined
     }, options); // Add some entropy if available
 
@@ -204,11 +217,11 @@ function () {
       }); // Generate random keys
 
       var iv = forge.random.getBytesSync(32);
-      var key = forge.random.getBytesSync(32); // Encrypt random key with all of the public keys
+      var key = forge.random.getBytesSync(this.options.aesKeySize / 8); // Encrypt random key with all of the public keys
 
       var encryptedKeys = {};
       publicKeys.forEach(function (publicKey) {
-        var encryptedKey = publicKey.encrypt(key, 'RSA-OAEP');
+        var encryptedKey = publicKey.encrypt(key, _this.options.rsaStandard);
 
         var fingerprint = _this.fingerprint(publicKey);
 
@@ -216,7 +229,7 @@ function () {
       }); // Create buffer and cipher
 
       var buffer = forge.util.createBuffer(message, 'utf8');
-      var cipher = forge.cipher.createCipher(AES_STANDARD, key); // Actual encryption
+      var cipher = forge.cipher.createCipher(this.options.aesStandard, key); // Actual encryption
 
       cipher.start({
         iv: iv
@@ -229,7 +242,8 @@ function () {
       payload.iv = forge.util.encode64(iv);
       payload.keys = encryptedKeys;
       payload.cipher = forge.util.encode64(cipher.output.data);
-      payload.signature = signature; // Return encrypted message
+      payload.signature = signature;
+      payload.tag = cipher.mode.tag && forge.util.encode64(cipher.mode.tag.getBytes()); // Return encrypted message
 
       return JSON.stringify(payload);
     }
@@ -263,15 +277,17 @@ function () {
 
       var keyBytes = forge.util.decode64(encryptedKey);
       var iv = forge.util.decode64(payload.iv);
-      var cipher = forge.util.decode64(payload.cipher); // Use RSA to decrypt AES key
+      var cipher = forge.util.decode64(payload.cipher);
+      var tag = payload.tag && forge.util.decode64(payload.tag); // Use RSA to decrypt AES key
 
-      var key = privateKey.decrypt(keyBytes, 'RSA-OAEP'); // Create buffer and decipher
+      var key = privateKey.decrypt(keyBytes, this.options.rsaStandard); // Create buffer and decipher
 
       var buffer = forge.util.createBuffer(cipher);
-      var decipher = forge.cipher.createDecipher(AES_STANDARD, key); // Actual decryption
+      var decipher = forge.cipher.createDecipher(this.options.aesStandard, key); // Actual decryption
 
       decipher.start({
-        iv: iv
+        iv: iv,
+        tag: tag
       });
       decipher.update(buffer);
       decipher.finish(); // Return utf-8 encoded bytes
@@ -335,6 +351,12 @@ module.exports = {
 },{"../package.json":52}],4:[function(require,module,exports){
 "use strict";
 
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -353,12 +375,14 @@ function () {
 
     _classCallCheck(this, RSA);
 
-    this.options = Object.assign({}, {
+    this.options = _objectSpread({
       keySize: 4096,
-      rsaStandard: 'RSA-OAEP',
       entropy: undefined
     }, options);
-    if (this.options.entropy) this._entropy(this.options.entropy);
+
+    if (this.options.entropy) {
+      this._entropy(this.options.entropy);
+    }
   }
   /**
    * Generates RSA keypair
@@ -29822,7 +29846,7 @@ exports.clearImmediate = typeof clearImmediate === "function" ? clearImmediate :
 },{"process/browser.js":50,"timers":51}],52:[function(require,module,exports){
 module.exports={
     "name": "hybrid-crypto-js",
-    "version": "0.2.2",
+    "version": "0.2.3",
     "description": "Hybrid (RSA+AES) encryption and decryption toolkit for JavaScript",
     "main": "lib/index.js",
     "scripts": {

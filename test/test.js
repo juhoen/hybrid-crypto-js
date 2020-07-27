@@ -255,7 +255,7 @@ describe('Crypt', function() {
         assert.equal(verified2, true);
     });
 
-    it('should sign message wirh any message digest', function() {
+    it('should sign message with any message digest', function() {
         const _testSignAndVerify = md => {
             // Issuer keys
             var issuerPublicKey = publicKey2;
@@ -279,6 +279,47 @@ describe('Crypt', function() {
 
         // Revert original md after testing
         crypt.options.md = originalMd;
+    });
+
+    it('should work with standards', function() {
+        this.timeout(10000);
+
+        const testWithStandards = (aesStandard, rsaStandard) => {
+            // Using key size 192 as 3DES standards requires that
+            var crypt = new Crypt({
+                aesStandard,
+                rsaStandard,
+                aesKeySize: 192,
+            });
+
+            var message = 'Hello world!';
+
+            var encrypted = crypt.encrypt(publicKey, message);
+            var decrypted = crypt.decrypt(privateKey, encrypted).message;
+
+            assert.notEqual(encrypted, message);
+            assert.equal(decrypted, message);
+        };
+
+        const rsaStandards = ['RSA-OAEP', 'RSAES-PKCS1-V1_5'];
+        const aesStandards = [
+            'AES-ECB',
+            'AES-CBC',
+            'AES-CFB',
+            'AES-OFB',
+            'AES-CTR',
+            'AES-GCM',
+            '3DES-ECB',
+            '3DES-CBC',
+            'DES-ECB',
+            'DES-CBC',
+        ];
+
+        aesStandards.forEach(aesStandard => {
+            rsaStandards.forEach(rsaStandard => {
+                testWithStandards(aesStandard, rsaStandard);
+            });
+        });
     });
 });
 

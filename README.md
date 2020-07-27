@@ -76,6 +76,21 @@ var rsa = new RSA({ entropy: entropy });
 
 // Select default message digest
 var crypt = new Crypt({ md: 'sha512' });
+
+// Select AES or RSA standard
+var crypt = new Crypt({
+    // Default AES standard is AES-CBC. Options are:
+    // AES-ECB, AES-CBC, AES-CFB, AES-OFB, AES-CTR, AES-GCM, 3DES-ECB, 3DES-CBC, DES-ECB, DES-CBC
+    aesStandard: 'AES-CBC',
+    // Default RSA standard is RSA-OAEP. Options are:
+    // RSA-OAEP, RSAES-PKCS1-V1_5
+    rsaStandard: 'RSA-OAEP',
+});
+
+// Alternate AES keysize (some AES algorithms requires specific key size)
+var crypt = new Crypt({
+    aesKeySize: 192, // Defaults to 256
+});
 ```
 
 ### Encryption
@@ -215,6 +230,5 @@ rsa.generateKeyPair(function(keyPair) {
 // RSA can be also initialized with options
 var rsa = new RSA({
     keySize: 4096,
-    rsaStandard: 'RSA-OAEP', // RSA-OAEP or RSAES-PKCS1-V1_5,
 });
 ```
