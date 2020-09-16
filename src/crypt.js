@@ -5,6 +5,7 @@ const { pki, rsa } = forge;
 const {
     DEFAULT_MESSAGE_DIGEST,
     DEFAULT_AES_KEY_SIZE,
+    DEFAULT_AES_IV_SIZE,
     AES_STANDARD,
     RSA_STANDARD,
 } = require('./constants');
@@ -12,6 +13,7 @@ const {
 type CryptProps = {
     md: string,
     aesKeySize: number,
+    aesIvSize: number,
     entropy?: string | number,
     aesStandard: string,
     rsaStandard: string,
@@ -24,6 +26,7 @@ class Crypt {
         this.options = {
             md: DEFAULT_MESSAGE_DIGEST,
             aesKeySize: DEFAULT_AES_KEY_SIZE,
+            aesIvSize: DEFAULT_AES_IV_SIZE,
             aesStandard: AES_STANDARD,
             rsaStandard: RSA_STANDARD,
             entropy: undefined,
@@ -198,7 +201,7 @@ class Crypt {
         ): Array<Object>);
 
         // Generate random keys
-        const iv = forge.random.getBytesSync(32);
+        const iv = forge.random.getBytesSync(this.options.aesIvSize);
         const key = forge.random.getBytesSync(this.options.aesKeySize / 8);
 
         // Encrypt random key with all of the public keys
