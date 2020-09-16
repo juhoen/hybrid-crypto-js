@@ -321,6 +321,31 @@ describe('Crypt', function() {
             });
         });
     });
+
+    it('should encrypt with a default IV size of 32', function() {
+        var message = 'Hello world!';
+
+        var encrypted = crypt.encrypt(publicKey, message);
+        var iv = Buffer.from(JSON.parse(encrypted).iv, 'base64');
+
+        assert.equal(iv.length, 32);
+    })
+
+    it('should encrypt with custom IV size', function () {
+        var crypt = new Crypt({
+            aesIvSize: 16
+        });
+
+        var message = 'Hello world!';
+
+        var encrypted = crypt.encrypt(publicKey, message);
+        var decrypted = crypt.decrypt(privateKey, encrypted).message;
+        var iv = Buffer.from(JSON.parse(encrypted).iv, 'base64');
+
+        assert.equal(iv.length, 16);
+        assert.notEqual(encrypted, message);
+        assert.equal(decrypted, message);
+    });
 });
 
 describe('Helpers', function() {

@@ -5,7 +5,8 @@ module.exports = {
   AES_STANDARD: 'AES-CBC',
   RSA_STANDARD: 'RSA-OAEP',
   DEFAULT_MESSAGE_DIGEST: 'sha256',
-  DEFAULT_AES_KEY_SIZE: 256
+  DEFAULT_AES_KEY_SIZE: 256,
+  DEFAULT_AES_IV_SIZE: 32
 };
 },{}],2:[function(require,module,exports){
 "use strict";
@@ -32,6 +33,7 @@ var pki = forge.pki,
 var _require = require('./constants'),
     DEFAULT_MESSAGE_DIGEST = _require.DEFAULT_MESSAGE_DIGEST,
     DEFAULT_AES_KEY_SIZE = _require.DEFAULT_AES_KEY_SIZE,
+    DEFAULT_AES_IV_SIZE = _require.DEFAULT_AES_IV_SIZE,
     AES_STANDARD = _require.AES_STANDARD,
     RSA_STANDARD = _require.RSA_STANDARD;
 
@@ -46,6 +48,7 @@ function () {
     this.options = _objectSpread({
       md: DEFAULT_MESSAGE_DIGEST,
       aesKeySize: DEFAULT_AES_KEY_SIZE,
+      aesIvSize: DEFAULT_AES_IV_SIZE,
       aesStandard: AES_STANDARD,
       rsaStandard: RSA_STANDARD,
       entropy: undefined
@@ -216,7 +219,7 @@ function () {
         return typeof key === 'string' ? pki.publicKeyFromPem(key) : key;
       }); // Generate random keys
 
-      var iv = forge.random.getBytesSync(32);
+      var iv = forge.random.getBytesSync(this.options.aesIvSize);
       var key = forge.random.getBytesSync(this.options.aesKeySize / 8); // Encrypt random key with all of the public keys
 
       var encryptedKeys = {};
