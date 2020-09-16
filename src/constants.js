@@ -5,4 +5,5 @@ module.exports = {
     RSA_STANDARD: 'RSA-OAEP',
     DEFAULT_MESSAGE_DIGEST: 'sha256',
     DEFAULT_AES_KEY_SIZE: 256,
+    DEFAULT_AES_IV_SIZE: 32
 };
