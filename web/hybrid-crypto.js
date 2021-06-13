@@ -338,7 +338,7 @@ function () {
 }();
 
 module.exports = Crypt;
-},{"./constants":1,"./helpers":3,"node-forge":18}],3:[function(require,module,exports){
+},{"./constants":1,"./helpers":3,"node-forge":19}],3:[function(require,module,exports){
 "use strict";
 
 var pkg = require('../package.json');
@@ -351,7 +351,7 @@ module.exports = {
     return Array.isArray(obj) ? obj : [obj];
   }
 };
-},{"../package.json":52}],4:[function(require,module,exports){
+},{"../package.json":53}],4:[function(require,module,exports){
 "use strict";
 
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
@@ -456,7 +456,7 @@ function () {
 }();
 
 module.exports = RSA;
-},{"node-forge":18}],5:[function(require,module,exports){
+},{"node-forge":19}],5:[function(require,module,exports){
 "use strict";
 
 var _crypt = _interopRequireDefault(require("./crypt"));
@@ -1562,7 +1562,7 @@ function _createCipher(options) {
   return cipher;
 }
 
-},{"./cipher":11,"./cipherModes":12,"./forge":16,"./util":48}],8:[function(require,module,exports){
+},{"./cipher":12,"./cipherModes":13,"./forge":17,"./util":49}],8:[function(require,module,exports){
 /**
  * A Javascript implementation of AES Cipher Suites for TLS.
  *
@@ -1846,7 +1846,100 @@ function compareMacs(key, mac1, mac2) {
   return mac1 === mac2;
 }
 
-},{"./aes":7,"./forge":16,"./tls":47}],9:[function(require,module,exports){
+},{"./aes":7,"./forge":17,"./tls":48}],9:[function(require,module,exports){
+/**
+ * Copyright (c) 2019 Digital Bazaar, Inc.
+ */
+
+var forge = require('./forge');
+require('./asn1');
+var asn1 = forge.asn1;
+
+exports.privateKeyValidator = {
+  // PrivateKeyInfo
+  name: 'PrivateKeyInfo',
+  tagClass: asn1.Class.UNIVERSAL,
+  type: asn1.Type.SEQUENCE,
+  constructed: true,
+  value: [{
+    // Version (INTEGER)
+    name: 'PrivateKeyInfo.version',
+    tagClass: asn1.Class.UNIVERSAL,
+    type: asn1.Type.INTEGER,
+    constructed: false,
+    capture: 'privateKeyVersion'
+  }, {
+    // privateKeyAlgorithm
+    name: 'PrivateKeyInfo.privateKeyAlgorithm',
+    tagClass: asn1.Class.UNIVERSAL,
+    type: asn1.Type.SEQUENCE,
+    constructed: true,
+    value: [{
+      name: 'AlgorithmIdentifier.algorithm',
+      tagClass: asn1.Class.UNIVERSAL,
+      type: asn1.Type.OID,
+      constructed: false,
+      capture: 'privateKeyOid'
+    }]
+  }, {
+    // PrivateKey
+    name: 'PrivateKeyInfo',
+    tagClass: asn1.Class.UNIVERSAL,
+    type: asn1.Type.OCTETSTRING,
+    constructed: false,
+    capture: 'privateKey'
+  }]
+};
+
+exports.publicKeyValidator = {
+  name: 'SubjectPublicKeyInfo',
+  tagClass: asn1.Class.UNIVERSAL,
+  type: asn1.Type.SEQUENCE,
+  constructed: true,
+  captureAsn1: 'subjectPublicKeyInfo',
+  value: [{
+    name: 'SubjectPublicKeyInfo.AlgorithmIdentifier',
+    tagClass: asn1.Class.UNIVERSAL,
+    type: asn1.Type.SEQUENCE,
+    constructed: true,
+    value: [{
+      name: 'AlgorithmIdentifier.algorithm',
+      tagClass: asn1.Class.UNIVERSAL,
+      type: asn1.Type.OID,
+      constructed: false,
+      capture: 'publicKeyOid'
+    }]
+  },
+  // capture group for ed25519PublicKey
+  {
+    tagClass: asn1.Class.UNIVERSAL,
+    type: asn1.Type.BITSTRING,
+    constructed: false,
+    composed: true,
+    captureBitStringValue: 'ed25519PublicKey'
+  }
+  // FIXME: this is capture group for rsaPublicKey, use it in this API or
+  // discard?
+  /* {
+    // subjectPublicKey
+    name: 'SubjectPublicKeyInfo.subjectPublicKey',
+    tagClass: asn1.Class.UNIVERSAL,
+    type: asn1.Type.BITSTRING,
+    constructed: false,
+    value: [{
+      // RSAPublicKey
+      name: 'SubjectPublicKeyInfo.subjectPublicKey.RSAPublicKey',
+      tagClass: asn1.Class.UNIVERSAL,
+      type: asn1.Type.SEQUENCE,
+      constructed: true,
+      optional: true,
+      captureAsn1: 'rsaPublicKey'
+    }]
+  } */
+  ]
+};
+
+},{"./asn1":10,"./forge":17}],10:[function(require,module,exports){
 /**
  * Javascript implementation of Abstract Syntax Notation Number One.
  *
@@ -3256,7 +3349,7 @@ asn1.prettyPrint = function(obj, level, indentation) {
   return rval;
 };
 
-},{"./forge":16,"./oids":27,"./util":48}],10:[function(require,module,exports){
+},{"./forge":17,"./oids":28,"./util":49}],11:[function(require,module,exports){
 (function (Buffer){
 /**
  * Base-N/Base-X encoding/decoding functions.
@@ -3446,7 +3539,7 @@ function _encodeWithByteBuffer(input, alphabet) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":6}],11:[function(require,module,exports){
+},{"buffer":6}],12:[function(require,module,exports){
 /**
  * Cipher base API.
  *
@@ -3678,7 +3771,7 @@ BlockCipher.prototype.finish = function(pad) {
   return true;
 };
 
-},{"./forge":16,"./util":48}],12:[function(require,module,exports){
+},{"./forge":17,"./util":49}],13:[function(require,module,exports){
 /**
  * Supported cipher modes.
  *
@@ -3800,7 +3893,7 @@ modes.cbc.prototype.start = function(options) {
     throw new Error('Invalid IV parameter.');
   } else {
     // save IV as "previous" block
-    this._iv = transformIV(options.iv);
+    this._iv = transformIV(options.iv, this.blockSize);
     this._prev = this._iv.slice(0);
   }
 };
@@ -3896,7 +3989,7 @@ modes.cfb.prototype.start = function(options) {
     throw new Error('Invalid IV parameter.');
   }
   // use IV as first input
-  this._iv = transformIV(options.iv);
+  this._iv = transformIV(options.iv, this.blockSize);
   this._inBlock = this._iv.slice(0);
   this._partialBytes = 0;
 };
@@ -4040,7 +4133,7 @@ modes.ofb.prototype.start = function(options) {
     throw new Error('Invalid IV parameter.');
   }
   // use IV as first input
-  this._iv = transformIV(options.iv);
+  this._iv = transformIV(options.iv, this.blockSize);
   this._inBlock = this._iv.slice(0);
   this._partialBytes = 0;
 };
@@ -4125,7 +4218,7 @@ modes.ctr.prototype.start = function(options) {
     throw new Error('Invalid IV parameter.');
   }
   // use IV as first input
-  this._iv = transformIV(options.iv);
+  this._iv = transformIV(options.iv, this.blockSize);
   this._inBlock = this._iv.slice(0);
   this._partialBytes = 0;
 };
@@ -4635,7 +4728,7 @@ modes.gcm.prototype.generateSubHashTable = function(mid, bits) {
 
 /** Utility functions */
 
-function transformIV(iv) {
+function transformIV(iv, blockSize) {
   if(typeof iv === 'string') {
     // convert iv string into byte buffer
     iv = forge.util.createBuffer(iv);
@@ -4649,9 +4742,21 @@ function transformIV(iv) {
       iv.putByte(tmp[i]);
     }
   }
+
+  if(iv.length() < blockSize) {
+    throw new Error(
+      'Invalid IV length; got ' + iv.length() +
+      ' bytes and expected ' + blockSize + ' bytes.');
+  }
+
   if(!forge.util.isArray(iv)) {
     // convert iv byte buffer into 32-bit integer array
-    iv = [iv.getInt32(), iv.getInt32(), iv.getInt32(), iv.getInt32()];
+    var ints = [];
+    var blocks = blockSize / 4;
+    for(var i = 0; i < blocks; ++i) {
+      ints.push(iv.getInt32());
+    }
+    iv = ints;
   }
 
   return iv;
@@ -4667,7 +4772,7 @@ function from64To32(num) {
   return [(num / 0x100000000) | 0, num & 0xFFFFFFFF];
 }
 
-},{"./forge":16,"./util":48}],13:[function(require,module,exports){
+},{"./forge":17,"./util":49}],14:[function(require,module,exports){
 /**
  * Debugging support for web applications.
  *
@@ -4747,7 +4852,7 @@ forge.debug.clear = function(cat, name) {
   }
 };
 
-},{"./forge":16}],14:[function(require,module,exports){
+},{"./forge":17}],15:[function(require,module,exports){
 /**
  * DES (Data Encryption Standard) implementation.
  *
@@ -5245,12 +5350,12 @@ function _createCipher(options) {
   return cipher;
 }
 
-},{"./cipher":11,"./cipherModes":12,"./forge":16,"./util":48}],15:[function(require,module,exports){
+},{"./cipher":12,"./cipherModes":13,"./forge":17,"./util":49}],16:[function(require,module,exports){
 (function (Buffer){
 /**
  * JavaScript implementation of Ed25519.
  *
- * Copyright (c) 2017-2018 Digital Bazaar, Inc.
+ * Copyright (c) 2017-2019 Digital Bazaar, Inc.
  *
  * This implementation is based on the most excellent TweetNaCl which is
  * in the public domain. Many thanks to its contributors:
@@ -5262,6 +5367,9 @@ require('./jsbn');
 require('./random');
 require('./sha512');
 require('./util');
+var asn1Validator = require('./asn1-validator');
+var publicKeyValidator = asn1Validator.publicKeyValidator;
+var privateKeyValidator = asn1Validator.privateKeyValidator;
 
 if(typeof BigInteger === 'undefined') {
   var BigInteger = forge.jsbn.BigInteger;
@@ -5313,6 +5421,75 @@ ed25519.generateKeyPair = function(options) {
   return {publicKey: pk, privateKey: sk};
 };
 
+/**
+ * Converts a private key from a RFC8410 ASN.1 encoding.
+ *
+ * @param obj - The asn1 representation of a private key.
+ *
+ * @returns {Object} keyInfo - The key information.
+ * @returns {Buffer|Uint8Array} keyInfo.privateKeyBytes - 32 private key bytes.
+ */
+ed25519.privateKeyFromAsn1 = function(obj) {
+  var capture = {};
+  var errors = [];
+  var valid = forge.asn1.validate(obj, privateKeyValidator, capture, errors);
+  if(!valid) {
+    var error = new Error('Invalid Key.');
+    error.errors = errors;
+    throw error;
+  }
+  var oid = forge.asn1.derToOid(capture.privateKeyOid);
+  var ed25519Oid = forge.oids.EdDSA25519;
+  if(oid !== ed25519Oid) {
+    throw new Error('Invalid OID "' + oid + '"; OID must be "' +
+      ed25519Oid + '".');
+  }
+  var privateKey = capture.privateKey;
+  // manually extract the private key bytes from nested octet string, see FIXME:
+  // https://github.com/digitalbazaar/forge/blob/master/lib/asn1.js#L542
+  var privateKeyBytes = messageToNativeBuffer({
+    message: forge.asn1.fromDer(privateKey).value,
+    encoding: 'binary'
+  });
+  // TODO: RFC8410 specifies a format for encoding the public key bytes along
+  // with the private key bytes. `publicKeyBytes` can be returned in the
+  // future. https://tools.ietf.org/html/rfc8410#section-10.3
+  return {privateKeyBytes: privateKeyBytes};
+};
+
+/**
+ * Converts a public key from a RFC8410 ASN.1 encoding.
+ *
+ * @param obj - The asn1 representation of a public key.
+ *
+ * @return {Buffer|Uint8Array} - 32 public key bytes.
+ */
+ed25519.publicKeyFromAsn1 = function(obj) {
+  // get SubjectPublicKeyInfo
+  var capture = {};
+  var errors = [];
+  var valid = forge.asn1.validate(obj, publicKeyValidator, capture, errors);
+  if(!valid) {
+    var error = new Error('Invalid Key.');
+    error.errors = errors;
+    throw error;
+  }
+  var oid = forge.asn1.derToOid(capture.publicKeyOid);
+  var ed25519Oid = forge.oids.EdDSA25519;
+  if(oid !== ed25519Oid) {
+    throw new Error('Invalid OID "' + oid + '"; OID must be "' +
+      ed25519Oid + '".');
+  }
+  var publicKeyBytes = capture.ed25519PublicKey;
+  if(publicKeyBytes.length !== ed25519.constants.PUBLIC_KEY_BYTE_LENGTH) {
+    throw new Error('Key length is invalid.');
+  }
+  return messageToNativeBuffer({
+    message: publicKeyBytes,
+    encoding: 'binary'
+  });
+};
+
 ed25519.publicKeyFromPrivateKey = function(options) {
   options = options || {};
   var privateKey = messageToNativeBuffer({
@@ -5338,9 +5515,13 @@ ed25519.sign = function(options) {
     message: options.privateKey,
     encoding: 'binary'
   });
-  if(privateKey.length !== ed25519.constants.PRIVATE_KEY_BYTE_LENGTH) {
+  if(privateKey.length === ed25519.constants.SEED_BYTE_LENGTH) {
+    var keyPair = ed25519.generateKeyPair({seed: privateKey});
+    privateKey = keyPair.privateKey;
+  } else if(privateKey.length !== ed25519.constants.PRIVATE_KEY_BYTE_LENGTH) {
     throw new TypeError(
       '"options.privateKey" must have a byte length of ' +
+      ed25519.constants.SEED_BYTE_LENGTH + ' or ' +
       ed25519.constants.PRIVATE_KEY_BYTE_LENGTH);
   }
 
@@ -5396,7 +5577,7 @@ ed25519.verify = function(options) {
 
 function messageToNativeBuffer(options) {
   var message = options.message;
-  if(message instanceof Uint8Array) {
+  if(message instanceof Uint8Array || message instanceof NativeBuffer) {
     return message;
   }
 
@@ -6245,7 +6426,7 @@ function M(o, a, b) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"./forge":16,"./jsbn":19,"./random":39,"./sha512":44,"./util":48,"buffer":6}],16:[function(require,module,exports){
+},{"./asn1-validator":9,"./forge":17,"./jsbn":20,"./random":40,"./sha512":45,"./util":49,"buffer":6}],17:[function(require,module,exports){
 /**
  * Node.js module for Forge.
  *
@@ -6260,7 +6441,7 @@ module.exports = {
   }
 };
 
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 /**
  * Hash-based Message Authentication Code implementation. Requires a message
  * digest object that can be obtained, for example, from forge.md.sha1 or
@@ -6408,7 +6589,7 @@ hmac.create = function() {
   return ctx;
 };
 
-},{"./forge":16,"./md":23,"./util":48}],18:[function(require,module,exports){
+},{"./forge":17,"./md":24,"./util":49}],19:[function(require,module,exports){
 /**
  * Node.js module for Forge.
  *
@@ -6445,7 +6626,7 @@ require('./task');
 require('./tls');
 require('./util');
 
-},{"./aes":7,"./aesCipherSuites":8,"./asn1":9,"./cipher":11,"./debug":13,"./des":14,"./ed25519":15,"./forge":16,"./hmac":17,"./kem":20,"./log":21,"./md.all":22,"./mgf1":26,"./pbkdf2":29,"./pem":30,"./pkcs1":31,"./pkcs12":32,"./pkcs7":33,"./pki":35,"./prime":36,"./prng":37,"./pss":38,"./random":39,"./rc2":40,"./ssh":45,"./task":46,"./tls":47,"./util":48}],19:[function(require,module,exports){
+},{"./aes":7,"./aesCipherSuites":8,"./asn1":10,"./cipher":12,"./debug":14,"./des":15,"./ed25519":16,"./forge":17,"./hmac":18,"./kem":21,"./log":22,"./md.all":23,"./mgf1":27,"./pbkdf2":30,"./pem":31,"./pkcs1":32,"./pkcs12":33,"./pkcs7":34,"./pki":36,"./prime":37,"./prng":38,"./pss":39,"./random":40,"./rc2":41,"./ssh":46,"./task":47,"./tls":48,"./util":49}],20:[function(require,module,exports){
 // Copyright (c) 2005  Tom Wu
 // All Rights Reserved.
 // See "LICENSE" for details.
@@ -7711,7 +7892,7 @@ BigInteger.prototype.isProbablePrime = bnIsProbablePrime;
 //long longValue()
 //static BigInteger valueOf(long val)
 
-},{"./forge":16}],20:[function(require,module,exports){
+},{"./forge":17}],21:[function(require,module,exports){
 /**
  * Javascript implementation of RSA-KEM.
  *
@@ -7881,7 +8062,7 @@ function _createKDF(kdf, md, counterStart, digestLength) {
   };
 }
 
-},{"./forge":16,"./jsbn":19,"./random":39,"./util":48}],21:[function(require,module,exports){
+},{"./forge":17,"./jsbn":20,"./random":40,"./util":49}],22:[function(require,module,exports){
 /**
  * Cross-browser support for logging in a web application.
  *
@@ -8200,7 +8381,7 @@ if(sConsoleLogger !== null) {
 // provide public access to console logger
 forge.log.consoleLogger = sConsoleLogger;
 
-},{"./forge":16,"./util":48}],22:[function(require,module,exports){
+},{"./forge":17,"./util":49}],23:[function(require,module,exports){
 /**
  * Node.js module for all known Forge message digests.
  *
@@ -8215,7 +8396,7 @@ require('./sha1');
 require('./sha256');
 require('./sha512');
 
-},{"./md":23,"./md5":24,"./sha1":42,"./sha256":43,"./sha512":44}],23:[function(require,module,exports){
+},{"./md":24,"./md5":25,"./sha1":43,"./sha256":44,"./sha512":45}],24:[function(require,module,exports){
 /**
  * Node.js module for Forge message digests.
  *
@@ -8228,7 +8409,7 @@ var forge = require('./forge');
 module.exports = forge.md = forge.md || {};
 forge.md.algorithms = forge.md.algorithms || {};
 
-},{"./forge":16}],24:[function(require,module,exports){
+},{"./forge":17}],25:[function(require,module,exports){
 /**
  * Message Digest Algorithm 5 with 128-bit digest (MD5) implementation.
  *
@@ -8519,7 +8700,7 @@ function _update(s, w, bytes) {
   }
 }
 
-},{"./forge":16,"./md":23,"./util":48}],25:[function(require,module,exports){
+},{"./forge":17,"./md":24,"./util":49}],26:[function(require,module,exports){
 /**
  * Node.js module for Forge mask generation functions.
  *
@@ -8533,7 +8714,7 @@ require('./mgf1');
 module.exports = forge.mgf = forge.mgf || {};
 forge.mgf.mgf1 = forge.mgf1;
 
-},{"./forge":16,"./mgf1":26}],26:[function(require,module,exports){
+},{"./forge":17,"./mgf1":27}],27:[function(require,module,exports){
 /**
  * Javascript implementation of mask generation function MGF1.
  *
@@ -8592,7 +8773,7 @@ mgf1.create = function(md) {
   return mgf;
 };
 
-},{"./forge":16,"./util":48}],27:[function(require,module,exports){
+},{"./forge":17,"./util":49}],28:[function(require,module,exports){
 /**
  * Object IDs for ASN.1.
  *
@@ -8629,6 +8810,8 @@ _IN('1.2.840.113549.1.1.10', 'RSASSA-PSS');
 _IN('1.2.840.113549.1.1.11', 'sha256WithRSAEncryption');
 _IN('1.2.840.113549.1.1.12', 'sha384WithRSAEncryption');
 _IN('1.2.840.113549.1.1.13', 'sha512WithRSAEncryption');
+// Edwards-curve Digital Signature Algorithm (EdDSA) Ed25519
+_IN('1.3.101.112', 'EdDSA25519');
 
 _IN('1.2.840.10040.4.3', 'dsa-with-sha1');
 
@@ -8701,9 +8884,14 @@ _IN('2.5.4.5', 'serialName');
 _IN('2.5.4.6', 'countryName');
 _IN('2.5.4.7', 'localityName');
 _IN('2.5.4.8', 'stateOrProvinceName');
+_IN('2.5.4.9', 'streetAddress');
 _IN('2.5.4.10', 'organizationName');
 _IN('2.5.4.11', 'organizationalUnitName');
 _IN('2.5.4.13', 'description');
+_IN('2.5.4.15', 'businessCategory');
+_IN('2.5.4.17', 'postalCode');
+_IN('1.3.6.1.4.1.311.60.2.1.2', 'jurisdictionOfIncorporationStateOrProvinceName');
+_IN('1.3.6.1.4.1.311.60.2.1.3', 'jurisdictionOfIncorporationCountryName');
 
 // X.509 extension OIDs
 _IN('2.16.840.1.113730.1.1', 'nsCertType');
@@ -8757,7 +8945,7 @@ _IN('1.3.6.1.5.5.7.3.3', 'codeSigning');
 _IN('1.3.6.1.5.5.7.3.4', 'emailProtection');
 _IN('1.3.6.1.5.5.7.3.8', 'timeStamping');
 
-},{"./forge":16}],28:[function(require,module,exports){
+},{"./forge":17}],29:[function(require,module,exports){
 /**
  * Password-based encryption functions.
  *
@@ -9782,7 +9970,7 @@ function createPbkdf2Params(salt, countBytes, dkLen, prfAlgorithm) {
   return params;
 }
 
-},{"./aes":7,"./asn1":9,"./des":14,"./forge":16,"./md":23,"./oids":27,"./pbkdf2":29,"./pem":30,"./random":39,"./rc2":40,"./rsa":41,"./util":48}],29:[function(require,module,exports){
+},{"./aes":7,"./asn1":10,"./des":15,"./forge":17,"./md":24,"./oids":28,"./pbkdf2":30,"./pem":31,"./random":40,"./rc2":41,"./rsa":42,"./util":49}],30:[function(require,module,exports){
 (function (Buffer){
 /**
  * Password-Based Key-Derivation Function #2 implementation.
@@ -9997,7 +10185,7 @@ module.exports = forge.pbkdf2 = pkcs5.pbkdf2 = function(
 };
 
 }).call(this,require("buffer").Buffer)
-},{"./forge":16,"./hmac":17,"./md":23,"./util":48,"buffer":6,"crypto":6}],30:[function(require,module,exports){
+},{"./forge":17,"./hmac":18,"./md":24,"./util":49,"buffer":6,"crypto":6}],31:[function(require,module,exports){
 /**
  * Javascript implementation of basic PEM (Privacy Enhanced Mail) algorithms.
  *
@@ -10229,7 +10417,7 @@ function ltrim(str) {
   return str.replace(/^\s+/, '');
 }
 
-},{"./forge":16,"./util":48}],31:[function(require,module,exports){
+},{"./forge":17,"./util":49}],32:[function(require,module,exports){
 /**
  * Partial implementation of PKCS#1 v2.2: RSA-OEAP
  *
@@ -10507,7 +10695,7 @@ function rsa_mgf1(seed, maskLength, hash) {
   return t.substring(0, maskLength);
 }
 
-},{"./forge":16,"./random":39,"./sha1":42,"./util":48}],32:[function(require,module,exports){
+},{"./forge":17,"./random":40,"./sha1":43,"./util":49}],33:[function(require,module,exports){
 /**
  * Javascript implementation of PKCS#12.
  *
@@ -11583,7 +11771,7 @@ p12.toPkcs12Asn1 = function(key, cert, password, options) {
  */
 p12.generateKey = forge.pbe.generatePkcs12Key;
 
-},{"./asn1":9,"./forge":16,"./hmac":17,"./oids":27,"./pbe":28,"./pkcs7asn1":34,"./random":39,"./rsa":41,"./sha1":42,"./util":48,"./x509":49}],33:[function(require,module,exports){
+},{"./asn1":10,"./forge":17,"./hmac":18,"./oids":28,"./pbe":29,"./pkcs7asn1":35,"./random":40,"./rsa":42,"./sha1":43,"./util":49,"./x509":50}],34:[function(require,module,exports){
 /**
  * Javascript implementation of PKCS#7 v1.5.
  *
@@ -12842,7 +13030,7 @@ function _decryptContent(msg) {
   }
 }
 
-},{"./aes":7,"./asn1":9,"./des":14,"./forge":16,"./oids":27,"./pem":30,"./pkcs7asn1":34,"./random":39,"./util":48,"./x509":49}],34:[function(require,module,exports){
+},{"./aes":7,"./asn1":10,"./des":15,"./forge":17,"./oids":28,"./pem":31,"./pkcs7asn1":35,"./random":40,"./util":49,"./x509":50}],35:[function(require,module,exports){
 /**
  * Javascript implementation of ASN.1 validators for PKCS#7 v1.5.
  *
@@ -13253,7 +13441,7 @@ p7v.recipientInfoValidator = {
   }]
 };
 
-},{"./asn1":9,"./forge":16,"./util":48}],35:[function(require,module,exports){
+},{"./asn1":10,"./forge":17,"./util":49}],36:[function(require,module,exports){
 /**
  * Javascript implementation of a basic Public Key Infrastructure, including
  * support for RSA public and private keys.
@@ -13357,7 +13545,7 @@ pki.privateKeyInfoToPem = function(pki, maxline) {
   return forge.pem.encode(msg, {maxline: maxline});
 };
 
-},{"./asn1":9,"./forge":16,"./oids":27,"./pbe":28,"./pbkdf2":29,"./pem":30,"./pkcs12":32,"./pss":38,"./rsa":41,"./util":48,"./x509":49}],36:[function(require,module,exports){
+},{"./asn1":10,"./forge":17,"./oids":28,"./pbe":29,"./pbkdf2":30,"./pem":31,"./pkcs12":33,"./pss":39,"./rsa":42,"./util":49,"./x509":50}],37:[function(require,module,exports){
 /**
  * Prime number generation API.
  *
@@ -13656,7 +13844,7 @@ function getMillerRabinTests(bits) {
 
 })();
 
-},{"./forge":16,"./jsbn":19,"./random":39,"./util":48}],37:[function(require,module,exports){
+},{"./forge":17,"./jsbn":20,"./random":40,"./util":49}],38:[function(require,module,exports){
 (function (process){
 /**
  * A javascript implementation of a cryptographically-secure
@@ -14079,7 +14267,7 @@ prng.create = function(plugin) {
 };
 
 }).call(this,require('_process'))
-},{"./forge":16,"./util":48,"_process":50,"crypto":6}],38:[function(require,module,exports){
+},{"./forge":17,"./util":49,"_process":51,"crypto":6}],39:[function(require,module,exports){
 /**
  * Javascript implementation of PKCS#1 PSS signature padding.
  *
@@ -14322,7 +14510,7 @@ pss.create = function(options) {
   return pssobj;
 };
 
-},{"./forge":16,"./random":39,"./util":48}],39:[function(require,module,exports){
+},{"./forge":17,"./random":40,"./util":49}],40:[function(require,module,exports){
 /**
  * An API for getting cryptographically-secure random bytes. The bytes are
  * generated using the Fortuna algorithm devised by Bruce Schneier and
@@ -14515,7 +14703,7 @@ module.exports = forge.random;
 
 })();
 
-},{"./aes":7,"./forge":16,"./prng":37,"./sha256":43,"./util":48}],40:[function(require,module,exports){
+},{"./aes":7,"./forge":17,"./prng":38,"./sha256":44,"./util":49}],41:[function(require,module,exports){
 /**
  * RC2 implementation.
  *
@@ -14927,7 +15115,7 @@ forge.rc2.createDecryptionCipher = function(key, bits) {
   return createCipher(key, bits, false);
 };
 
-},{"./forge":16,"./util":48}],41:[function(require,module,exports){
+},{"./forge":17,"./util":49}],42:[function(require,module,exports){
 /**
  * Javascript implementation of basic RSA algorithms.
  *
@@ -16787,7 +16975,7 @@ function _base64ToBigInt(b64) {
   return new BigInteger(forge.util.bytesToHex(forge.util.decode64(b64)), 16);
 }
 
-},{"./asn1":9,"./forge":16,"./jsbn":19,"./oids":27,"./pkcs1":31,"./prime":36,"./random":39,"./util":48,"crypto":6}],42:[function(require,module,exports){
+},{"./asn1":10,"./forge":17,"./jsbn":20,"./oids":28,"./pkcs1":32,"./prime":37,"./random":40,"./util":49,"crypto":6}],43:[function(require,module,exports){
 /**
  * Secure Hash Algorithm with 160-bit digest (SHA-1) implementation.
  *
@@ -17108,7 +17296,7 @@ function _update(s, w, bytes) {
   }
 }
 
-},{"./forge":16,"./md":23,"./util":48}],43:[function(require,module,exports){
+},{"./forge":17,"./md":24,"./util":49}],44:[function(require,module,exports){
 /**
  * Secure Hash Algorithm with 256-bit digest (SHA-256) implementation.
  *
@@ -17437,7 +17625,7 @@ function _update(s, w, bytes) {
   }
 }
 
-},{"./forge":16,"./md":23,"./util":48}],44:[function(require,module,exports){
+},{"./forge":17,"./md":24,"./util":49}],45:[function(require,module,exports){
 /**
  * Secure Hash Algorithm with a 1024-bit block size implementation.
  *
@@ -18000,7 +18188,7 @@ function _update(s, w, bytes) {
   }
 }
 
-},{"./forge":16,"./md":23,"./util":48}],45:[function(require,module,exports){
+},{"./forge":17,"./md":24,"./util":49}],46:[function(require,module,exports){
 /**
  * Functions to output keys in SSH-friendly formats.
  *
@@ -18238,7 +18426,7 @@ function _sha1() {
   return sha.digest();
 }
 
-},{"./aes":7,"./forge":16,"./hmac":17,"./md5":24,"./sha1":42,"./util":48}],46:[function(require,module,exports){
+},{"./aes":7,"./forge":17,"./hmac":18,"./md5":25,"./sha1":43,"./util":49}],47:[function(require,module,exports){
 /**
  * Support for concurrent task management and synchronization in web
  * applications.
@@ -18965,7 +19153,7 @@ forge.task.createCondition = function() {
   return cond;
 };
 
-},{"./debug":13,"./forge":16,"./log":21,"./util":48}],47:[function(require,module,exports){
+},{"./debug":14,"./forge":17,"./log":22,"./util":49}],48:[function(require,module,exports){
 /**
  * A Javascript implementation of Transport Layer Security (TLS).
  *
@@ -23249,7 +23437,7 @@ forge.tls.createSessionCache = tls.createSessionCache;
  */
 forge.tls.createConnection = tls.createConnection;
 
-},{"./asn1":9,"./forge":16,"./hmac":17,"./md5":24,"./pem":30,"./pki":35,"./random":39,"./sha1":42,"./util":48}],48:[function(require,module,exports){
+},{"./asn1":10,"./forge":17,"./hmac":18,"./md5":25,"./pem":31,"./pki":36,"./random":40,"./sha1":43,"./util":49}],49:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,setImmediate){
 /**
  * Utility functions for web applications.
@@ -23532,7 +23720,7 @@ util.ByteStringBuffer.prototype.fillWithByte = function(b, n) {
 /**
  * Puts bytes in this buffer.
  *
- * @param bytes the bytes (as a UTF-8 encoded string) to put.
+ * @param bytes the bytes (as a binary encoded string) to put.
  *
  * @return this buffer.
  */
@@ -23820,11 +24008,13 @@ util.ByteStringBuffer.prototype.getSignedInt = function(n) {
 };
 
 /**
- * Reads bytes out into a UTF-8 string and clears them from the buffer.
+ * Reads bytes out as a binary encoded string and clears them from the
+ * buffer. Note that the resulting string is binary encoded (in node.js this
+ * encoding is referred to as `binary`, it is *not* `utf8`).
  *
  * @param count the number of bytes to read, undefined or null for all.
  *
- * @return a UTF-8 string of bytes.
+ * @return a binary encoded string of bytes.
  */
 util.ByteStringBuffer.prototype.getBytes = function(count) {
   var rval;
@@ -23844,12 +24034,12 @@ util.ByteStringBuffer.prototype.getBytes = function(count) {
 };
 
 /**
- * Gets a UTF-8 encoded string of the bytes from this buffer without modifying
- * the read pointer.
+ * Gets a binary encoded string of the bytes from this buffer without
+ * modifying the read pointer.
  *
  * @param count the number of bytes to get, omit to get all.
  *
- * @return a string full of UTF-8 encoded characters.
+ * @return a string full of binary encoded characters.
  */
 util.ByteStringBuffer.prototype.bytes = function(count) {
   return (typeof(count) === 'undefined' ?
@@ -24481,11 +24671,12 @@ util.DataBuffer.prototype.getSignedInt = function(n) {
 };
 
 /**
- * Reads bytes out into a UTF-8 string and clears them from the buffer.
+ * Reads bytes out as a binary encoded string and clears them from the
+ * buffer.
  *
  * @param count the number of bytes to read, undefined or null for all.
  *
- * @return a UTF-8 string of bytes.
+ * @return a binary encoded string of bytes.
  */
 util.DataBuffer.prototype.getBytes = function(count) {
   // TODO: deprecate this method, it is poorly named and
@@ -24508,12 +24699,12 @@ util.DataBuffer.prototype.getBytes = function(count) {
 };
 
 /**
- * Gets a UTF-8 encoded string of the bytes from this buffer without modifying
- * the read pointer.
+ * Gets a binary encoded string of the bytes from this buffer without
+ * modifying the read pointer.
  *
  * @param count the number of bytes to get, omit to get all.
  *
- * @return a string full of UTF-8 encoded characters.
+ * @return a string full of binary encoded characters.
  */
 util.DataBuffer.prototype.bytes = function(count) {
   // TODO: deprecate this method, it is poorly named, add "getString()"
@@ -24660,12 +24851,13 @@ util.DataBuffer.prototype.toString = function(encoding) {
 /** End Buffer w/UInt8Array backing */
 
 /**
- * Creates a buffer that stores bytes. A value may be given to put into the
- * buffer that is either a string of bytes or a UTF-16 string that will
- * be encoded using UTF-8 (to do the latter, specify 'utf8' as the encoding).
+ * Creates a buffer that stores bytes. A value may be given to populate the
+ * buffer with data. This value can either be string of encoded bytes or a
+ * regular string of characters. When passing a string of binary encoded
+ * bytes, the encoding `raw` should be given. This is also the default. When
+ * passing a string of characters, the encoding `utf8` should be given.
  *
- * @param [input] the bytes to wrap (as a string) or a UTF-16 string to encode
- *          as UTF-8.
+ * @param [input] a string with encoded bytes to store in the buffer.
  * @param [encoding] (default: 'raw', other: 'utf8').
  */
 util.createBuffer = function(input, encoding) {
@@ -24894,24 +25086,27 @@ util.decode64 = function(input) {
 };
 
 /**
- * UTF-8 encodes the given UTF-16 encoded string (a standard JavaScript
- * string). Non-ASCII characters will be encoded as multiple bytes according
- * to UTF-8.
+ * Encodes the given string of characters (a standard JavaScript
+ * string) as a binary encoded string where the bytes represent
+ * a UTF-8 encoded string of characters. Non-ASCII characters will be
+ * encoded as multiple bytes according to UTF-8.
  *
- * @param str the string to encode.
+ * @param str a standard string of characters to encode.
  *
- * @return the UTF-8 encoded string.
+ * @return the binary encoded string.
  */
 util.encodeUtf8 = function(str) {
   return unescape(encodeURIComponent(str));
 };
 
 /**
- * Decodes a UTF-8 encoded string into a UTF-16 string.
+ * Decodes a binary encoded string that contains bytes that
+ * represent a UTF-8 encoded string of characters -- into a
+ * string of characters (a standard JavaScript string).
  *
- * @param str the string to decode.
+ * @param str the binary encoded string to decode.
  *
- * @return the UTF-16 encoded string (standard JavaScript string).
+ * @return the resulting standard string of characters.
  */
 util.decodeUtf8 = function(str) {
   return decodeURIComponent(escape(str));
@@ -25760,99 +25955,6 @@ util.makeLink = function(path, query, fragment) {
 };
 
 /**
- * Follows a path of keys deep into an object hierarchy and set a value.
- * If a key does not exist or it's value is not an object, create an
- * object in it's place. This can be destructive to a object tree if
- * leaf nodes are given as non-final path keys.
- * Used to avoid exceptions from missing parts of the path.
- *
- * @param object the starting object.
- * @param keys an array of string keys.
- * @param value the value to set.
- */
-util.setPath = function(object, keys, value) {
-  // need to start at an object
-  if(typeof(object) === 'object' && object !== null) {
-    var i = 0;
-    var len = keys.length;
-    while(i < len) {
-      var next = keys[i++];
-      if(i == len) {
-        // last
-        object[next] = value;
-      } else {
-        // more
-        var hasNext = (next in object);
-        if(!hasNext ||
-          (hasNext && typeof(object[next]) !== 'object') ||
-          (hasNext && object[next] === null)) {
-          object[next] = {};
-        }
-        object = object[next];
-      }
-    }
-  }
-};
-
-/**
- * Follows a path of keys deep into an object hierarchy and return a value.
- * If a key does not exist, create an object in it's place.
- * Used to avoid exceptions from missing parts of the path.
- *
- * @param object the starting object.
- * @param keys an array of string keys.
- * @param _default value to return if path not found.
- *
- * @return the value at the path if found, else default if given, else
- *         undefined.
- */
-util.getPath = function(object, keys, _default) {
-  var i = 0;
-  var len = keys.length;
-  var hasNext = true;
-  while(hasNext && i < len &&
-    typeof(object) === 'object' && object !== null) {
-    var next = keys[i++];
-    hasNext = next in object;
-    if(hasNext) {
-      object = object[next];
-    }
-  }
-  return (hasNext ? object : _default);
-};
-
-/**
- * Follow a path of keys deep into an object hierarchy and delete the
- * last one. If a key does not exist, do nothing.
- * Used to avoid exceptions from missing parts of the path.
- *
- * @param object the starting object.
- * @param keys an array of string keys.
- */
-util.deletePath = function(object, keys) {
-  // need to start at an object
-  if(typeof(object) === 'object' && object !== null) {
-    var i = 0;
-    var len = keys.length;
-    while(i < len) {
-      var next = keys[i++];
-      if(i == len) {
-        // last
-        delete object[next];
-      } else {
-        // more
-        if(!(next in object) ||
-          (typeof(object[next]) !== 'object') ||
-          (object[next] === null)) {
-           break;
-        }
-        object = object[next];
-      }
-    }
-  }
-};
-
-/**
  * Check if an object is empty.
  *
  * Taken from:
@@ -26246,7 +26348,7 @@ util.estimateCores = function(options, callback) {
 };
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],require("timers").setImmediate)
-},{"./baseN":10,"./forge":16,"_process":50,"buffer":6,"timers":51}],49:[function(require,module,exports){
+},{"./baseN":11,"./forge":17,"_process":51,"buffer":6,"timers":52}],50:[function(require,module,exports){
 /**
  * Javascript implementation of X.509 and related components (such as
  * Certification Signing Requests) of a Public Key Infrastructure.
@@ -29581,7 +29683,7 @@ pki.verifyCertificateChain = function(caStore, chain, options) {
   return true;
 };
 
-},{"./aes":7,"./asn1":9,"./des":14,"./forge":16,"./md":23,"./mgf":25,"./oids":27,"./pem":30,"./pss":38,"./rsa":41,"./util":48}],50:[function(require,module,exports){
+},{"./aes":7,"./asn1":10,"./des":15,"./forge":17,"./md":24,"./mgf":26,"./oids":28,"./pem":31,"./pss":39,"./rsa":42,"./util":49}],51:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -29767,7 +29869,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],51:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 (function (setImmediate,clearImmediate){
 var nextTick = require('process/browser.js').nextTick;
 var apply = Function.prototype.apply;
@@ -29846,7 +29948,7 @@ exports.clearImmediate = typeof clearImmediate === "function" ? clearImmediate :
   delete immediateIds[id];
 };
 }).call(this,require("timers").setImmediate,require("timers").clearImmediate)
-},{"process/browser.js":50,"timers":51}],52:[function(require,module,exports){
+},{"process/browser.js":51,"timers":52}],53:[function(require,module,exports){
 module.exports={
     "name": "hybrid-crypto-js",
     "version": "0.2.4",
@@ -29880,7 +29982,7 @@ module.exports={
     },
     "homepage": "https://github.com/juhoen/hybrid-crypto-js",
     "dependencies": {
-        "node-forge": "^0.8.5"
+        "node-forge": "^0.10.0"
     },
     "devDependencies": {
         "@babel/cli": "^7.5.5",
@@ -29894,7 +29996,7 @@ module.exports={
         "browserify": "^16.5.0",
         "chai": "^4.1.2",
         "flow-bin": "^0.107.0",
-        "mocha": "^4.0.1",
+        "mocha": "^9.0.0",
         "prettier": "^1.18.2",
         "uglify-js": "^3.2.1"
     },

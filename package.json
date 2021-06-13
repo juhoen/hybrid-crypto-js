@@ -31,7 +31,7 @@
     },
     "homepage": "https://github.com/juhoen/hybrid-crypto-js",
     "dependencies": {
-        "node-forge": "^0.8.5"
+        "node-forge": "^0.10.0"
     },
     "devDependencies": {
         "@babel/cli": "^7.5.5",
@@ -45,7 +45,7 @@
         "browserify": "^16.5.0",
         "chai": "^4.1.2",
         "flow-bin": "^0.107.0",
-        "mocha": "^4.0.1",
+        "mocha": "^9.0.0",
         "prettier": "^1.18.2",
         "uglify-js": "^3.2.1"
     },
